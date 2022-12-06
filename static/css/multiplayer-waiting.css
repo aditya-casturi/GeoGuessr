@@ -119,6 +119,7 @@ body {
 }
 
 .team {
+    vertical-align: top;
     display: inline-block;
     width: 150px;
     height: 200px;

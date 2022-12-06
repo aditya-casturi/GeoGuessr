@@ -4,13 +4,13 @@ $(document).ready(function () {
 
     const params = new URLSearchParams(window.location.search);
     let sessionId = params.get('sessionId');
-    const playerBox = $('#players');
     const subtitle = $('#subtitle');
 
     let gameCode;
     let username;
     let host;
-    let teams = 1;
+    let teams = 0;
+    let currentTeam = 1;
 
     document.body.style.visibility = 'hidden';
     $('#loader').css('visibility', 'visible')
@@ -26,7 +26,6 @@ $(document).ready(function () {
                 host = sessionData['host']
 
                 socket.emit('User Connected', {'username': username, 'gameCode': gameCode, 'sessionId': sessionId})
-                socket.emit('Get Players', {'gameCode': gameCode, 'sessionId': sessionId})
 
                 $('#name-display').text(username)
                 $('#code-display').text(gameCode)
@@ -52,44 +51,80 @@ $(document).ready(function () {
                     subtitle.text("Wait for the host to start the game.");
                 }
 
-                document.getElementById('1').innerHTML = 'Team 1<br>';
-                socket.emit('Player Joined Team', {'username': username, 'team': 1, 'gameCode': gameCode, 'sessionId': sessionId})
+                socket.emit('Player Joined Team', {'teamId': 1, 'gameCode': gameCode, 'sessionId': sessionId, 'username': username, 'lastTeam': currentTeam})
+
+                socket.emit('Get Teams', {'gameCode': gameCode, 'sessionId': sessionId})
+
+                socket.on('Send Teams', function (data) {
+                    if (data['sessionId'] === sessionId) {
+                        let teamIds = data['teamIds']
+                        let usernames = data['usernames']
+                        let numTeams = data['teams']
+
+                        for (let i = 1; i <= numTeams; i++) {
+                            addTeam();
+                            addListener();
+                        }
+
+                        for (let i = 0; i < teamIds.length; i++) {
+                            document.getElementById(teamIds[i]).innerHTML = document.getElementById(teamIds[i]).innerHTML + usernames[i] + "<br>";
+                        }
+                    }
+
+                    document.body.style.visibility = 'visible';
+                    $('#loader').css('visibility', 'hidden');
+                });
             }
         })
 
         $('#add').click(function () {
-            teams = teams + 1;
-            if (teams % 4 === 0) {
-                $('.teams-container').append("<div class=\"team\" id=\'" + teams + "\'>Team " + teams + "</div><br>")
-            } else {
-                $('.teams-container').append("<div class=\"team\" id=\'" + teams + "\'>Team " + teams + "</div>")
+            addTeam();
+            addListener()
+
+            socket.emit('Team Created', {'gameCode': gameCode, 'sessionId': sessionId})
+        });
+
+        socket.on('Add Team To Display', function (data) {
+            if (sessionId !== data['sessionId']) {
+                addTeam();
+                addListener();
             }
         });
+
+        socket.on('Update Teams Display', function (data) {
+            if (data['gameCode'] === gameCode && data['sessionId'] !== sessionId) {
+                let teamId = data['teamId'];
+                let username = data['username'];
+                let lastTeam = data['lastTeam'];
+
+                document.getElementById(lastTeam).innerHTML = document.getElementById(lastTeam).innerHTML.replace(username + "<br>", "");
+                document.getElementById(teamId).innerHTML = document.getElementById(teamId).innerHTML + username + "<br>";
+            }
+        });
+
+        function addListener() {
+            document.getElementById(teams).addEventListener('click', function () {
+                document.getElementById(currentTeam).innerHTML = document.getElementById(currentTeam).innerHTML.replace(username + "<br>", "");
+                socket.emit('Player Joined Team', {'teamId': this.id, 'gameCode': gameCode, 'sessionId': sessionId, 'username': username, 'lastTeam': currentTeam})
+                document.getElementById(this.id).innerHTML = document.getElementById(this.id).innerHTML + username + "<br>";
+                currentTeam = this.id;
+            });
+        }
+
+        function addTeam() {
+            teams = teams + 1;
+            if (teams % 4 === 0) {
+                $('.teams-container').append("<div class=\"team\" id=\'" + teams + "\'>Team " + teams + "<br></div><br>")
+
+            } else {
+                $('.teams-container').append("<div class=\"team\" id=\'" + teams + "\'>Team " + teams + "<br></rb></div>")
+            }
+        }
+
 
         socket.on('Start Game', function (data) {
             if (data['gameCode'] === gameCode) {
                 window.location.href = baseUrl + "/versus?sessionId=" + sessionId;
-            }
-        })
-
-        socket.on('Send Players', function (data) {
-            if (data['sessionId'] === sessionId) {
-                playerBox.text(data['players'])
-            }
-
-            document.body.style.visibility = 'visible';
-            $('#loader').css('visibility', 'hidden');
-        })
-
-        socket.on('Player Joined', function (data) {
-            if (data['gameCode'] === gameCode) {
-                socket.emit('Get Players', {'gameCode': gameCode, 'sessionId': sessionId})
-            }
-        })
-
-        socket.on('Player Left', function (data) {
-            if (data['gameCode'] === gameCode) {
-                socket.emit('Get Players', {'gameCode': gameCode, 'sessionId': sessionId})
             }
         })
     })

@@ -360,6 +360,56 @@ def get_leaderboard(data):
                                       'host': host, 'gameOver': 'false', 'username': curr_username}, broadcast=True)
 
 
+@socketio.on('Player Joined Team')
+def player_joined_team(data):
+    session_id = data['sessionId']
+    team_id = data['teamId']
+    game_code = data['gameCode']
+    username = data['username']
+    last_team = data['lastTeam']
+
+    query = 'UPDATE adityacasturi_connections SET teamId = %s WHERE sessionId = %s'
+    query_vars = (team_id, session_id,)
+    execute_query(query, query_vars)
+
+    emit('Update Teams Display', {'gameCode': game_code, 'username': username,
+                                  'teamId': team_id, 'sessionId': session_id, 'lastTeam': last_team}, broadcast=True)
+
+
+@socketio.on('Get Teams')
+def get_teams(data):
+    game_code = data['gameCode']
+    session_id = data['sessionId']
+
+    query = 'SELECT username, teamId FROM adityacasturi_connections WHERE gameCode = %s'
+    query_vars = (game_code,)
+    result = execute_query(query, query_vars)
+
+    usernames = []
+    team_ids = []
+
+    for row in result:
+        usernames.append(row['username'])
+        team_ids.append(row['teamId'])
+
+    query = 'SELECT teams FROM adityacasturi_games WHERE gameCode = %s'
+    query_vars = (game_code,)
+    teams = int(execute_query(query, query_vars)[0]['teams'])
+
+    emit('Send Teams', {'usernames': usernames, 'teamIds': team_ids, 'sessionId': session_id, 'teams': teams}, broadcast=True)
+
+
+@socketio.on('Team Created')
+def team_created(data):
+    game_code = data['gameCode']
+    session_id = data['sessionId']
+    emit('Add Team To Display', {'gameCode': game_code, 'sessionId': session_id}, broadcast=True)
+
+    query = 'UPDATE adityacasturi_games SET teams = teams + 1 WHERE gameCode = %s'
+    query_vars = (game_code,)
+    execute_query(query, query_vars)
+
+
 def ordinal(n):
     return str(n) + {1: 'st', 2: 'nd', 3: 'rd'}.get(4 if 10 <= n % 100 < 20 else n % 10, "th")
 
