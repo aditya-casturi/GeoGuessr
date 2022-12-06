@@ -46,6 +46,11 @@ def join():
     return render_template('join.html')
 
 
+@app.route('/teams')
+def teams():
+    return render_template('teams.html')
+
+
 @app.route('/leaderboard')
 def leaderboard():
     return render_template('leaderboard.html')
@@ -396,7 +401,8 @@ def get_teams(data):
     query_vars = (game_code,)
     teams = int(execute_query(query, query_vars)[0]['teams'])
 
-    emit('Send Teams', {'usernames': usernames, 'teamIds': team_ids, 'sessionId': session_id, 'teams': teams}, broadcast=True)
+    emit('Send Teams', {'usernames': usernames, 'teamIds': team_ids,
+                        'sessionId': session_id, 'teams': teams}, broadcast=True)
 
 
 @socketio.on('Team Created')
