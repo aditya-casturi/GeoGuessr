@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GeoGuessr</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="../static/scripts/br-leaderboard.js"></script>
+  <link rel="stylesheet" href="../static/css/leaderboard.css">
+  <link rel="stylesheet" href="https://use.typekit.net/xtl8ngj.css">
+  <link rel="icon" type="image/x-icon" href="static/images/favicon.png">
+</head>
+<body>
+<div id="loader"></div>
+<div id="bar">
+  Scoreboard
+  <div id="name-display" class="align-left">Default</div>
+</div>
+<div>
+  <div id="br-info"></div>
+  <div id="info"></div>
+  <div id="continue-button">NEXT ROUND</div>
+  <div id="lobby-button" onclick="window.location.href = '/'">RETURN TO LOBBY</div>
+</div>
+</body>
+</html>

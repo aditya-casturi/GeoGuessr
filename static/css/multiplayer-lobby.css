@@ -1,0 +1,154 @@
+body {
+    background: #EEEEEE;
+    overflow: hidden;
+    color: white;
+    user-select: none;
+}
+
+.inner {
+    text-align: center;
+}
+
+.outer {
+    width: fit-content;
+
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#subtitle {
+    font-family: futura-pt, sans-serif;
+    font-size: 40pt;
+    color: black;
+}
+
+#description {
+    color: #C21806;
+    font-family: futura-pt, sans-serif;
+    font-size: 20pt;
+    margin-top: 5px;
+}
+
+#play-button {
+    padding: 10px;
+    background: #C21806;
+    font-family: futura-pt, sans-serif;
+    font-size: 15pt;
+    border: 1px solid transparent;
+    border-radius: 40px;
+    margin-left: 30px;
+    margin-right: 30px;
+}
+
+#play-button:hover {
+    background: #ab1c0c;
+}
+
+.header {
+    position: relative;
+    width: 100%;
+    height: 60px;
+
+    border-bottom: 3px solid #E8E8E8;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+
+.logo {
+    width: fit-content;
+    height: 100%;
+    object-fit: cover;
+    overflow: hidden;
+    user-select: none;
+    margin-left: 25px;
+}
+
+.header > div {
+    width: fit-content;
+    height: 100%;
+    object-fit: cover;
+    user-select: none;
+    float: right;
+    margin-right: 30px;
+    margin-top: 20px;
+    font-family: futura-pt, sans-serif;
+    font-weight: bold;
+    color: black;
+}
+
+#rounds-selector {
+    width: 400px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.slider {
+    -webkit-appearance: none;
+    width: 50%;
+    height: 10px;
+    background: white;
+    outline: none;
+    border: 2px solid black;
+    border-radius: 8px;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 7px;
+    height: 30px;
+    background: black;
+    cursor: pointer;
+    border: 1px solid black;
+}
+
+#name {
+    display: table;
+    width: 50%;
+    border-radius: 5px;
+    border: 2px solid black;
+    outline: none;
+    color: black;
+    padding: 10px 0 10px 0;
+    font-size: 15pt;
+    font-family: futura-pt, sans-serif;
+    font-weight: 500;
+    margin: 0 auto 20px;
+}
+
+input::placeholder {
+    color: gray;
+}
+
+.shake {
+    animation: shake 0.82s cubic-bezier(.36, .07, .19, .97) both;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+@keyframes shake {
+
+    10%,
+    90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%,
+    80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    40%,
+    60% {
+        transform: translate3d(4px, 0, 0);
+    }
+}

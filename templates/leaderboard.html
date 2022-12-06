@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GeoGuessr</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="../static/scripts/leaderboard.js"></script>
+    <link rel="stylesheet" href="../static/css/leaderboard.css">
+    <link rel="stylesheet" href="https://use.typekit.net/xtl8ngj.css">
+    <link rel="icon" type="image/x-icon" href="static/images/favicon.png">
+</head>
+<body>
+<div id="loader"></div>
+<div id="bar">
+    Scoreboard
+    <div id="name-display" class="align-left">Default</div>
+    <div id="points-display" class="align-right"></div>
+</div>
+<div>
+    <div class="leaderboard-position" id="first-place">
+        <div class="align-left" id="1-username">Hidden</div>
+        <div class="align-right" id="1-points"></div>
+    </div>
+    <div class="leaderboard-position">
+        <div class="align-left" id="2-username">Hidden</div>
+        <div class="align-right" id="2-points"></div>
+    </div>
+    <div class="leaderboard-position">
+        <div class="align-left" id="3-username">Hidden</div>
+        <div class="align-right" id="3-points"></div>
+    </div>
+    <div class="leaderboard-position">
+        <div class="align-left" id="4-username">Hidden</div>
+        <div class="align-right" id="4-points"></div>
+    </div>
+    <div class="leaderboard-position">
+        <div class="align-left" id="5-username">Hidden</div>
+        <div class="align-right" id="5-points"></div>
+    </div>
+    <div id="info"></div>
+    <div id="continue-button">NEXT ROUND</div>
+    <div id="lobby-button" onclick="window.location.href = '/'">RETURN TO LOBBY</div>
+</div>
+</body>
+</html>

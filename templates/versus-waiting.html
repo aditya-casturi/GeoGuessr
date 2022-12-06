@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GeoGuessr</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="../static/css/multiplayer-waiting.css">
+    <link rel="stylesheet" href="https://use.typekit.net/xtl8ngj.css">
+    <link rel="icon" type="image/x-icon" href="static/images/favicon.png">
+    <script async
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjmOyNW59QdlCLMdsdZbIkK9dVomkAo6g">
+    </script>
+    <script type="module" src="../static/scripts/versus-waiting.js"></script>
+</head>
+<body>
+<div id="bar">
+    <div id="name-display"></div>
+    <div id="code-display"></div>
+</div>
+<div class="outer">
+    <div class="inner" id="title"></div>
+    <div class="inner" id="subtitle"></div>
+    <div class="inner" id="players"></div>
+</div>
+<div id="loader"></div>
+</body>
+</html>

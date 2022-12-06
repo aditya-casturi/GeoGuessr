@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="templates" type="javaScript">
+    <properties>
+      <sourceFilesUrls>
+        <item url="file://$USER_HOME$/Documents/School/CS4/AdvancedWordle/templates" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <root url="file://$USER_HOME$/Documents/School/CS4/AdvancedWordle/templates" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

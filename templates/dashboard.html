@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GeoGuessr</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="static/css/dashboard.css">
+    <link rel="stylesheet" href="https://use.typekit.net/xtl8ngj.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="static/images/favicon.png">
+</head>
+    <body>
+        <div class="header">
+            <img src="static/images/logo.png" alt="Logo" class="logo" onclick="window.location.href = '/'">
+            <div>Powered by Google Maps</div>
+        </div>
+
+        <div class="container">
+            <div class="game-mode" onclick="window.location.href = 'singleplayer-lobby'">CLASSIC <i class="fa fa-user"></i></div>
+            <div class="game-mode" onclick="window.location.href = 'versus-lobby'">VERSUS <i class="fa fa-users"></i></div>
+            <div class="game-mode" onclick="window.location.href = 'battle-royale-lobby'">BATTLE ROYALE <i class="fa fa-crown"></i></div>
+            <div class="game-mode">MAGIC <i class="fa fa-bolt"></i></div>
+            <div class="game-mode" onclick="window.location.href = 'join'">JOIN <i class="fa fa-globe"></i></div>
+            <div class="game-mode" onclick="window.location.href = 'teams-lobby'">TEAMS <i class="fa fa-map"></i></div>
+        </div>
+    </body>
+</html>

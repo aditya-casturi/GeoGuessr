@@ -1,0 +1,140 @@
+body {
+    background: #EEEEEE;
+    width: 100%;
+    height: 100%;
+    padding-top: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+#bar {
+    visibility: hidden;
+    height: 60px;
+    background: black;
+    text-align: center;
+    color: white;
+    font-family: futura-pt-bold, sans-serif;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 30pt;
+    margin-bottom: 100px;
+}
+
+.leaderboard-position {
+    visibility: hidden;
+    user-select: none;
+    width: 700px;
+    height: fit-content;
+    background: #EEEEEE;
+    display: table;
+    font-family: futura-pt, sans-serif;
+    font-size: 25pt;
+    margin: 20px auto;
+    padding: 10px 15px;
+    box-shadow: 5px 5px 5px grey;
+    color: #EEEEEE;
+}
+
+.align-left {
+    float: left;
+}
+
+.align-right {
+    float: right;
+}
+
+#first-place {
+    background: #C21806;
+    color: white;
+}
+
+#continue-button, #lobby-button {
+    visibility: hidden;
+    width: fit-content;
+    text-align: center;
+    background: black;
+    color: white;
+    border: 1px solid transparent;
+    border-radius: 50px;
+    padding: 5px 40px;
+    font-family: "futura-pt-condensed", sans-serif;
+    font-weight: bolder;
+    font-size: 25pt;
+    font-style: italic;
+    margin: 50px auto 0;
+    cursor: pointer;
+}
+
+#continue-button:hover, #lobby-button {
+    background: #ad1709;
+}
+
+#lobby-button {
+    visibility: hidden;
+    margin-top: 5px;
+    font-family: futura-pt, sans-serif;
+    font-size: 15pt;
+}
+
+#points-display {
+    visibility: hidden;
+    color: white;
+    margin: 10px 20px auto auto;
+    font-family: futura-pt, sans-serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: 20pt;
+    user-select: none;
+}
+
+#name-display {
+    visibility: hidden;
+    color: white;
+    margin: 10px auto auto 20px;
+    font-family: futura-pt, sans-serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: 20pt;
+    user-select: none;
+}
+
+#info {
+    visibility: hidden;
+    width: fit-content;
+    color: #C21806;
+    margin: 20px auto;
+    font-family: "futura-pt-condensed", sans-serif;
+    font-size: 20pt;
+    user-select: none;
+}
+
+#br-info {
+    width: fit-content;
+    color: #C21806;
+    margin: 20px auto;
+    font-family: "futura-pt-bold", sans-serif;
+    font-size: 75pt;
+    user-select: none;
+}
+
+#loader {
+    visibility: hidden;
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    margin: auto;
+    border: 16px solid #808080;
+    border-top: 16px solid #C21806;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
