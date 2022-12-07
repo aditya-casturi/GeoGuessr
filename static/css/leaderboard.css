@@ -18,6 +18,7 @@ body {
     padding-bottom: 10px;
     font-size: 30pt;
     margin-bottom: 100px;
+    user-select: none;
 }
 
 .leaderboard-position {
@@ -65,8 +66,32 @@ body {
     cursor: pointer;
 }
 
-#continue-button:hover, #lobby-button {
-    background: #ad1709;
+#continue-button:hover, #lobby-button:hover {
+    animation: scale 200ms ease-in-out forwards;
+}
+
+#continue-button:not(:hover), #lobby-button:not(:hover) {
+    animation: shrink 200ms ease-in-out forwards;
+}
+
+@keyframes scale {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes shrink {
+    from {
+        transform: scale(1.05);
+    }
+
+    to {
+        transform: scale(1);
+    }
 }
 
 #lobby-button {

@@ -25,13 +25,13 @@ function initialize() {
     // send a 'Get Game Data' message to the server
     socket.on('connect', function () {
         socket.emit('Get Game Data', {'sessionId': sessionId})
-        console.log(sessionId)
 
         // When the server responds with a 'Send Game Data' message,
         // update the map and panorama with the game data
         socket.on('Send Game Data', function (data) {
             // Make sure the message is for the correct session
             if (data['sessionId'] === sessionId) {
+
                 let gameCode = data['gameCode']
 
                 // Get the number of rounds and the rounds remaining from the message
@@ -117,9 +117,22 @@ function initialize() {
                     adjustCompassHeading()
                 });
 
-                // Make the page visible and hide the loading spinner
-                document.body.style.visibility = 'visible';
-                $('#loader').css('visibility', 'hidden')
+                socket.emit('Get Players Left', {sessionId: sessionId})
+
+                socket.on('Send Players Left', function (data) {
+                    if (data['sessionId'] === sessionId) {
+                        let plural = 'players';
+                        if (data['playersLeft'] === 1) {
+                            plural = 'player';
+                        }
+                        $('#players-info').text(data['playersLeft'] + ' ' + plural + ' left')
+
+                        // Make the page visible and hide the loading spinner
+                        document.body.style.visibility = 'visible';
+                        $('#loader').css('visibility', 'hidden')
+                    }
+                });
+
 
                 let timerStarted = false
                 guess.click(function () {

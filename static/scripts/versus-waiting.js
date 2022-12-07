@@ -27,12 +27,13 @@ $(document).ready(function () {
                 socket.emit('User Connected', {'username': username, 'gameCode': gameCode, 'sessionId': sessionId})
                 socket.emit('Get Players', {'gameCode': gameCode, 'sessionId': sessionId})
 
-                $('#name-display').text(username)
+                document.getElementById('name-display').innerHTML =
+                    "<i class=\"fa fa-home\" onclick='window.location.href=\"/\"'></i>" + username;
                 $('#code-display').text("Versus - " + gameCode)
 
                 if (host === "true") {
                     $('#title').text("You're the host!");
-                    subtitle.text("Start Game");
+                    subtitle.text("START GAME");
 
                     subtitle.css('margin-left', '600px')
                     subtitle.css('margin-right', '600px')

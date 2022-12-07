@@ -6,6 +6,7 @@ window.onload = function() {
     const mode = params.get('mode');
 
     $('#loader').css('visibility', 'visible')
+
     socket.on('connect', function () {
         socket.emit('Get Leaderboard', {'sessionId': sessionId, 'mode': mode})
 

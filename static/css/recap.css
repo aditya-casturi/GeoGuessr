@@ -90,7 +90,31 @@ html, body {
 }
 
 #continue-button:hover {
-    background: #ad1709;
+    animation: scale 200ms ease-in-out forwards;
+}
+
+#continue-button:not(:hover) {
+    animation: shrink 200ms ease-in-out forwards;
+}
+
+@keyframes scale {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes shrink {
+    from {
+        transform: scale(1.05);
+    }
+
+    to {
+        transform: scale(1);
+    }
 }
 
 #loader {

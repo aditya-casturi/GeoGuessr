@@ -61,7 +61,6 @@ body {
     color: black;
     user-select: none;
     background: transparent;
-
     border-radius: 50px;
 }
 
@@ -124,6 +123,14 @@ body {
     user-select: none;
 }
 
+i {
+    margin-right: 20px;
+}
+
+i:hover {
+    color: #C21806;
+}
+
 #players {
     font-family: futura-pt, sans-serif;
     font-weight: 300;
@@ -132,6 +139,7 @@ body {
     font-size: 20pt;
     color: #C21806;
     word-spacing: 30px;
+    user-select: none;
 }
 
 #add {

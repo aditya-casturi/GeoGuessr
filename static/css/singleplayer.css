@@ -49,7 +49,7 @@ html, body {
     bottom: 30px;
     right: 30px;
     z-index: 1;
-    transition: all 0.3s ease-in-out;
+    transition: all 0.15s ease-in-out;
     margin-bottom: 50px;
     cursor: crosshair;
 }
@@ -57,25 +57,25 @@ html, body {
 #map:hover {
     height: 450px;
     width: 675px;
-    transition: height 0.3s, width 0.3s;
+    transition: height 0.15s, width 0.15s;
 }
 
 #map:not(:hover) {
     height: 175px;
     width: 250px;
-    transition: height 0.3s, width 0.3s;
-    transition-delay: 1.5s;
+    transition: height 0.15s, width 0.15s;
+    transition-delay: 1s;
 }
 
 #map:hover + #guess {
     width: 675px;
-    transition: width 0.3s;
+    transition: width 0.15s;
 }
 
 #map:not(:hover) + #guess {
     width: 250px;
-    transition: width 0.3s;
-    transition-delay: 1.5s;
+    transition: width 0.15s;
+    transition-delay: 1s;
 }
 
 #guess {
@@ -96,6 +96,34 @@ html, body {
     font-weight: bolder;
     font-size: 15pt;
     pointer-events: none;
+}
+
+#guess:hover {
+    animation: scale 200ms ease-in-out forwards;
+}
+
+#guess:not(:hover) {
+    animation: shrink 200ms ease-in-out forwards;
+}
+
+@keyframes scale {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes shrink {
+    from {
+        transform: scale(1.05);
+    }
+
+    to {
+        transform: scale(1);
+    }
 }
 
 #compass {
@@ -119,8 +147,20 @@ html, body {
     font-family: futura-pt-bold, sans-serif;
     font-size: 20pt;
     color: white;
-    padding: 10px 15px 15px 30px;
-    border-bottom: 1px solid transparent;
-    border-left: 1px solid transparent;
-    border-bottom-left-radius: 50px;
+    padding: 10px;
+}
+
+#mode-info {
+    position: absolute;
+    width: 100%;
+    height: fit-content;
+    background: black;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    user-select: none;
+    font-family: futura-pt-bold, sans-serif;
+    font-size: 20pt;
+    color: white;
+    padding: 10px;
 }

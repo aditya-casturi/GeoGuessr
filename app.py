@@ -18,7 +18,7 @@ socketio = SocketIO(app)
 mysql = MySQL(app)
 
 sockets = {}
-to_delete = ""
+to_delete = {}
 
 
 @app.route('/')
@@ -231,9 +231,9 @@ def generate_next_location(data):
     query = 'SELECT mode FROM adityacasturi_games WHERE gameCode = %s'
     mode = execute_query(query, (gameCode,))[0]['mode']
 
-    if mode == 'br' and to_delete != "":
+    if mode == 'br' and gameCode in to_delete != "":
         query = 'DELETE FROM adityacasturi_connections WHERE username = %s'
-        execute_query(query, (to_delete,))
+        execute_query(query, (to_delete[gameCode],))
         query = 'UPDATE adityacasturi_connections SET points = 0 WHERE gameCode = %s'
         execute_query(query, (gameCode,))
 
@@ -330,7 +330,7 @@ def get_leaderboard(data):
         scoreboard.append(usernames[len(points) - 1] + " ELIMINATED")
 
         global to_delete
-        to_delete = usernames[len(points) - 1]
+        to_delete[gameCode] = usernames[len(points) - 1]
 
         if host_username == usernames[len(points) - 1]:
             query = 'UPDATE adityacasturi_connections SET host = %s WHERE username = %s'
@@ -462,6 +462,21 @@ def submit_team_guess(data):
             'answerLong, gameCode, teamId) VALUES (%s, %s, %s, %s, %s, %s, %s)'
     query_vars = (session_id, guess_lat, guess_long, answer_lat, answer_long, game_code, teamId,)
     execute_query(query, query_vars)
+
+
+@socketio.on('Get Players Left')
+def get_players_left(data):
+    session_id = data['sessionId']
+
+    query = 'SELECT gameCode FROM adityacasturi_connections WHERE sessionId = %s'
+    query_vars = (session_id,)
+    game_code = execute_query(query, query_vars)[0]['gameCode']
+
+    query = 'SELECT COUNT(*) FROM adityacasturi_connections WHERE gameCode = %s'
+    query_vars = (game_code,)
+    players_left = execute_query(query, query_vars)[0]['COUNT(*)']
+
+    emit('Send Players Left', {'sessionId': session_id, 'playersLeft': players_left}, broadcast=True)
 
 
 def ordinal(n):

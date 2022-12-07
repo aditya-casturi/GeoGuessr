@@ -23,6 +23,7 @@ window.onload = function() {
                 console.log(scoreboard)
 
                 const nameDisplay = $('#name-display');
+                const pointsDisplay = $('#points-display');
                 const continueButton = $('#continue-button');
 
                 nameDisplay.text(username);
@@ -39,8 +40,12 @@ window.onload = function() {
                     brInfo.css('color', 'black');
                 }
 
-                info.text(scoreboard.length - 1 + ' players remaining.');
+                let plural = scoreboard.length > 1 ? 's' : '';
+                info.text(scoreboard.length - 1 + ' ' + plural + ' remaining.');
                 info.css('visibility', 'visible');
+                pointsDisplay.text(gameCode);
+                pointsDisplay.css('visibility', 'visible');
+                nameDisplay.css('visibility', 'visible');
 
                 $('#loader').css('visibility', 'hidden');
                 $('#bar').css('visibility', 'visible');
