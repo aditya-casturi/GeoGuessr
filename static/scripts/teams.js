@@ -107,6 +107,8 @@ function initialize() {
 
                     // Set a flag to indicate that a marker has been placed on the map
                     markerPlaced = true;
+
+                    $('#guess').text('GUESS');
                 });
 
                 // Listen for when the user changes the viewpoint in the street view

@@ -43,7 +43,31 @@ body {
 }
 
 #play-button:hover {
-    background: #ab1c0c;
+    animation: scale 200ms ease-in-out forwards;
+}
+
+#play-button:not(:hover) {
+    animation: shrink 200ms ease-in-out forwards;
+}
+
+@keyframes scale {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes shrink {
+    from {
+        transform: scale(1.1);
+    }
+
+    to {
+        transform: scale(1);
+    }
 }
 
 .header {
@@ -106,7 +130,7 @@ body {
 
 #name {
     display: table;
-    width: 50%;
+    width: 60%;
     border-radius: 5px;
     border: 2px solid black;
     outline: none;
@@ -115,7 +139,7 @@ body {
     font-size: 15pt;
     font-family: futura-pt, sans-serif;
     font-weight: 500;
-    margin: 0 auto 20px;
+    margin: 10px auto 20px;
 }
 
 input::placeholder {

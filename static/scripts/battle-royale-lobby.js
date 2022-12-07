@@ -9,6 +9,7 @@ $(document).ready(function () {
         if (username === '') {
             nameBox.addClass('shake');
         } else {
+            $('#play-button').text('CREATING GAME...')
             socket.emit('Create Game', {'username': username, 'sessionId': sessionId, 'mode': 'br', 'rounds': 0})
 
             window.location.href = baseUrl + "/battle-royale-waiting?sessionId=" + sessionId;

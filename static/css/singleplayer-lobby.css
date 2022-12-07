@@ -37,13 +37,37 @@ body {
     font-family: futura-pt, sans-serif;
     font-size: 15pt;
     border: 1px solid transparent;
-    border-radius: 15px;
+    border-radius: 50px;
     margin-left: 30px;
     margin-right: 30px;
 }
 
 #play-button:hover {
-    background: #ab1c0c;
+    animation: scale 200ms ease-in-out forwards;
+}
+
+#play-button:not(:hover) {
+    animation: shrink 200ms ease-in-out forwards;
+}
+
+@keyframes scale {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes shrink {
+    from {
+        transform: scale(1.1);
+    }
+
+    to {
+        transform: scale(1);
+    }
 }
 
 .header {

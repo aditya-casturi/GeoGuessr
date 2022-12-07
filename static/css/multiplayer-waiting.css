@@ -60,7 +60,37 @@ body {
     font-size: 25pt;
     color: black;
     user-select: none;
-    cursor: pointer;
+    background: transparent;
+
+    border-radius: 50px;
+}
+
+#subtitle:hover {
+    animation: scale 200ms ease-in-out forwards;
+}
+
+#subtitle:not(:hover) {
+    animation: shrink 200ms ease-in-out forwards;
+}
+
+@keyframes scale {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes shrink {
+    from {
+        transform: scale(1.1);
+    }
+
+    to {
+        transform: scale(1);
+    }
 }
 
 #bar {

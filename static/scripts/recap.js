@@ -130,6 +130,7 @@ function initialize() {
                     let highestPoints = 0;
                     let bestBounds;
                     let bestCenter;
+                    let closestDistance;
 
                     let validGuess = true;
                     let answer = new google.maps.LatLng(answerLat, answerLong);
@@ -203,6 +204,7 @@ function initialize() {
                                 highestPoints = points;
                                 bestBounds = bounds;
                                 bestCenter = center;
+                                closestDistance = distance;
                             }
                         }
                     }
@@ -210,6 +212,18 @@ function initialize() {
                     map.fitBounds(bestBounds);
                     map.setCenter(bestCenter);
                     map.setZoom(5);
+
+                    const distanceDisplay = $('#distance-display');
+                    const pointsDisplay = $('#points-display')
+                    const pointsBar = $('#points-bar')
+
+                    if (validGuess) {
+                        distanceDisplay.html("The best guess was <i><b style='color: #F9CA19'>" + closestDistance + "</b></i> miles from the correct location.")
+                    } else {
+                        distanceDisplay.text("You didn't guess in time.")
+                    }
+                    pointsDisplay.html(highestPoints.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " points")
+                    pointsBar.val(highestPoints)
 
                     $('#loader').css('visibility', 'hidden')
                     document.body.style.visibility = 'visible';

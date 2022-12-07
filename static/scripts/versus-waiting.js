@@ -28,19 +28,15 @@ $(document).ready(function () {
                 socket.emit('Get Players', {'gameCode': gameCode, 'sessionId': sessionId})
 
                 $('#name-display').text(username)
-                $('#code-display').text(gameCode)
+                $('#code-display').text("Versus - " + gameCode)
 
                 if (host === "true") {
                     $('#title').text("You're the host!");
                     subtitle.text("Start Game");
 
-                    subtitle.mouseenter(function () {
-                        subtitle.css("text-decoration", "underline")
-                    })
-
-                    subtitle.mouseleave(function () {
-                        subtitle.css("text-decoration", "none")
-                    })
+                    subtitle.css('margin-left', '600px')
+                    subtitle.css('margin-right', '600px')
+                    subtitle.css('border', '3px solid black')
 
                     subtitle.click(function () {
                         socket.emit('Generate Location', {'gameCode': gameCode})
