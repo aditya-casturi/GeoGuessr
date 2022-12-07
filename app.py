@@ -399,10 +399,10 @@ def get_teams(data):
 
     query = 'SELECT teams FROM adityacasturi_games WHERE gameCode = %s'
     query_vars = (game_code,)
-    teams = int(execute_query(query, query_vars)[0]['teams'])
+    t = int(execute_query(query, query_vars)[0]['teams'])
 
     emit('Send Teams', {'usernames': usernames, 'teamIds': team_ids,
-                        'sessionId': session_id, 'teams': teams}, broadcast=True)
+                        'sessionId': session_id, 'teams': t}, broadcast=True)
 
 
 @socketio.on('Team Created')
@@ -413,6 +413,54 @@ def team_created(data):
 
     query = 'UPDATE adityacasturi_games SET teams = teams + 1 WHERE gameCode = %s'
     query_vars = (game_code,)
+    execute_query(query, query_vars)
+
+
+@socketio.on('Teammate Marker Placed')
+def teammate_marker_placed(data):
+    session_id = data['sessionId']
+    game_code = data['gameCode']
+    lat = data['lat']
+    long = data['long']
+
+    query = 'SELECT teamId FROM adityacasturi_connections WHERE sessionId = %s'
+    query_vars = (session_id,)
+    team_id = execute_query(query, query_vars)[0]['teamId']
+
+    emit('Update Teammate Marker', {'sessionId': session_id, 'gameCode': game_code,
+                                    'lat': lat, 'long': long, 'teamId': team_id}, broadcast=True)
+
+
+@socketio.on('Get Team Guesses')
+def get_team_guesses(data):
+    session_id = data['sessionId']
+
+    query = 'SELECT gameCode, teamId FROM adityacasturi_connections WHERE sessionId = %s'
+    query_vars = (session_id,)
+    result = execute_query(query, query_vars)
+    game_code = result[0]['gameCode']
+    team_id = result[0]['teamId']
+
+    query = 'SELECT * FROM adityacasturi_guesses WHERE gameCode = %s AND teamId = %s'
+    query_vars = (game_code, team_id,)
+    result = execute_query(query, query_vars)
+
+    emit('Send Team Guesses', {'sessionId': session_id, 'guesses': result}, broadcast=True)
+
+
+@socketio.on('Submit Team Guess')
+def submit_team_guess(data):
+    session_id = data['sessionId']
+    guess_lat = data['guessLat']
+    guess_long = data['guessLong']
+    answer_lat = data['answerLat']
+    answer_long = data['answerLong']
+    game_code = data['gameCode']
+    teamId = data['teamId']
+
+    query = 'INSERT INTO adityacasturi_guesses (sessionId, guessLat, guessLong, answerLat, ' \
+            'answerLong, gameCode, teamId) VALUES (%s, %s, %s, %s, %s, %s, %s)'
+    query_vars = (session_id, guess_lat, guess_long, answer_lat, answer_long, game_code, teamId,)
     execute_query(query, query_vars)
 
 
@@ -444,4 +492,4 @@ def generate_location():
 
 
 if __name__ == '__main__':
-    socketio.run(app, host='10.83.29.137')
+    socketio.run(app, host='192.168.86.45')

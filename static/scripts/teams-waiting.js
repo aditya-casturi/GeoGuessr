@@ -124,7 +124,7 @@ $(document).ready(function () {
 
         socket.on('Start Game', function (data) {
             if (data['gameCode'] === gameCode) {
-                window.location.href = baseUrl + "/teams?sessionId=" + sessionId;
+                window.location.href = baseUrl + "/teams?sessionId=" + sessionId + "&teamId=" + currentTeam;
             }
         })
     })

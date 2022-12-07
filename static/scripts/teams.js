@@ -14,6 +14,8 @@ function initialize() {
 
     // Keep track of whether the user has placed a marker on the map
     let markerPlaced = false;
+    let teammateMarkers = {};
+    let teamId = params.get('teamId');
 
     // Hide the page until the game data is loaded
     document.body.style.visibility = 'hidden';
@@ -25,7 +27,6 @@ function initialize() {
     // send a 'Get Game Data' message to the server
     socket.on('connect', function () {
         socket.emit('Get Game Data', {'sessionId': sessionId})
-        console.log(sessionId)
 
         // When the server responds with a 'Send Game Data' message,
         // update the map and panorama with the game data
@@ -40,6 +41,7 @@ function initialize() {
 
                 // Update the round display
                 $('#round-info').text("Round " + (rounds - roundsLeft + 1) + "/" + rounds)
+                $('#team-info').text("Team " + teamId);
 
                 // Get the correct location from the message
                 let lat = parseFloat(data['lat']);
@@ -89,6 +91,8 @@ function initialize() {
                         clearMap();
                         // Place a marker on the map at the location of the user's click
                         placeMarker(event.latLng);
+
+                        socket.emit('Teammate Marker Placed', {'sessionId': sessionId, 'gameCode': gameCode, 'lat': event.latLng.lat(), 'long': event.latLng.lng()})
 
                         // If there were no markers on the map before this click,
                         // change the color of the "guess" button to indicate that it can be clicked
@@ -156,11 +160,12 @@ function initialize() {
                                 guessLatLong = new google.maps.LatLng(0, 0);
                             }
 
-                            socket.emit('Submit Guess', {'sessionId': sessionId,
+                            socket.emit('Submit Team Guess', {'sessionId': sessionId,
                                                         'guessLat': guessLatLong.lat(), 'guessLong': guessLatLong.lng(),
-                                                        'answerLat': answerLatLong.lat(), 'answerLong': answerLatLong.lng()})
+                                                        'answerLat': answerLatLong.lat(), 'answerLong': answerLatLong.lng(),
+                                                        'teamId': teamId, 'gameCode': gameCode})
 
-                            window.location.href = "/recap?sessionId=" + sessionId + "&mode=v";
+                            window.location.href = "/recap?sessionId=" + sessionId + "&mode=t";
                         } else {
                             if (timeleft >= 10) {
                                 countdown.text("0:" + timeleft);
@@ -231,6 +236,26 @@ function initialize() {
                         });
                     });
                 };
+
+                socket.on('Update Teammate Marker', function (data) {
+                    if (data['gameCode'] === gameCode && data['sessionId'] !== sessionId
+                        && parseInt(data['teamId']) === parseInt(teamId)) {
+                        let lat = parseFloat(data['lat']);
+                        let long = parseFloat(data['long']);
+                        let teammate = data['sessionId']
+
+                        let pos = new google.maps.LatLng(lat, long);
+
+                        if (teammateMarkers[teammate] !== undefined) {
+                            teammateMarkers[teammate].setMap(null);
+                        }
+
+                        teammateMarkers[teammate] = new google.maps.Marker({
+                            icon: 'https://www.geoguessr.com/_next/static/images/favicon-aae84a1ec836612840470a029b5c29d6.png',
+                            position: pos, map: staticMap, cursor: 'crosshair'
+                        });
+                    }
+                });
             }
         });
     })
