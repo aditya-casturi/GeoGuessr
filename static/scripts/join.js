@@ -8,6 +8,20 @@ $(document).ready(function () {
 
 
     joinButton.click(function () {
+        redirect();
+    });
+
+    //on enter key press
+    document.addEventListener("keypress", function(event) {
+        // If the user presses the "Enter" key on the keyboard
+        if (event.key === "Enter") {
+            // Cancel the default action, if needed
+            event.preventDefault();
+            redirect();
+        }
+    });
+
+    function redirect() {
         joinButton.html('<i id="icon" class="fa fa-globe"></i>');
         removeErrorAnimations()
 
@@ -24,7 +38,7 @@ $(document).ready(function () {
             }
             joinButton.html('<i id="icon" class="fa fa-check"></i>');
         }
-    });
+    }
 
     socket.on('Code Valid', function (data) {
         if (sessionId === data['sessionId']) {

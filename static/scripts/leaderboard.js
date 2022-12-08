@@ -25,7 +25,7 @@ window.onload = function() {
                     const continueButton = $('#continue-button');
                     const info = $('#info');
                     nameDisplay.text('Team ' + teamId);
-                    pointsDisplay.text(points[teamId - 1] + ' points');
+                    pointsDisplay.text(points[teams.indexOf(teamId)] + ' points');
                     info.text('Your team is ' + place + ' place');
 
                     for (let i = 0; i < teams.length; i++) {
