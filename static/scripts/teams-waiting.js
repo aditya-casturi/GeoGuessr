@@ -25,6 +25,10 @@ $(document).ready(function () {
                 gameCode = sessionData['gameCode']
                 host = sessionData['host']
 
+                if (host !== "true") {
+                    $('#add').remove();
+                }
+
                 socket.emit('User Connected', {'username': username, 'gameCode': gameCode, 'sessionId': sessionId})
 
                 document.getElementById('name-display').innerHTML =

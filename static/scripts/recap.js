@@ -14,8 +14,6 @@ function initialize() {
                 if (data['sessionId'] === sessionId) {
                     let guessData = data['guessData'];
 
-                    console.log(guessData);
-
                     let answerLat = parseFloat(guessData['answerLat']);
                     let answerLong = parseFloat(guessData['answerLong']);
 
@@ -151,10 +149,14 @@ function initialize() {
                         position: answer, map: map, cursor: 'crosshair', icon: icon
                     });
 
+
+
                     for (const guess of guesses) {
                         let guessLat = parseFloat(guess['guessLat']);
                         let guessLong = parseFloat(guess['guessLong']);
                         let userGuess = new google.maps.LatLng(guessLat, guessLong);
+
+
 
                         let points;
                         let distance;
@@ -167,6 +169,8 @@ function initialize() {
                             distance = Math.round(distance * 0.000621371);
                             points = Math.round(5000 / Math.pow(Math.E, (distance / 926)));
                         }
+
+
 
                         if (validGuess) {
                             new google.maps.Marker({
@@ -200,6 +204,8 @@ function initialize() {
 
                             line.setMap(map);
 
+
+
                             if (points > highestPoints) {
                                 highestPoints = points;
                                 bestBounds = bounds;
@@ -209,9 +215,13 @@ function initialize() {
                         }
                     }
 
+
                     map.fitBounds(bestBounds);
                     map.setCenter(bestCenter);
                     map.setZoom(5);
+
+
+                    socket.emit('Update Score', {'sessionId': sessionId, 'points': highestPoints});
 
                     const distanceDisplay = $('#distance-display');
                     const pointsDisplay = $('#points-display')
@@ -227,6 +237,10 @@ function initialize() {
 
                     $('#loader').css('visibility', 'hidden')
                     document.body.style.visibility = 'visible';
+
+                    $('#continue-button').click(function () {
+                        window.location.href = "/leaderboard?sessionId=" + sessionId + "&mode=" + mode;
+                    })
                 }
             });
         }

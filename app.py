@@ -236,6 +236,26 @@ def generate_next_location(data):
         execute_query(query, (to_delete[gameCode],))
         query = 'UPDATE adityacasturi_connections SET points = 0 WHERE gameCode = %s'
         execute_query(query, (gameCode,))
+    elif mode == 't':
+        query = 'SELECT teamId FROM adityacasturi_connections WHERE gameCode = %s'
+        teamIds = execute_query(query, (gameCode,))
+
+        uniqueIds = []
+        for teamId in teamIds:
+            if teamId not in uniqueIds:
+                uniqueIds.append(teamId)
+
+        trueNumberOfTeams = len(uniqueIds)
+        query = 'UPDATE adityacasturi_games SET teams = %s WHERE gameCode = %s'
+        execute_query(query, (trueNumberOfTeams, gameCode,))
+
+        if 'sessionId' in data:
+            session_id = data['sessionId']
+            query = 'SELECT teamId FROM adityacasturi_connections WHERE sessionId = %s'
+            team_id = execute_query(query, (session_id,))[0]['teamId']
+
+            query = 'DELETE FROM adityacasturi_guesses WHERE teamId = %s AND gameCode = %s'
+            execute_query(query, (team_id, gameCode,))
 
     emit('Start Game', {'gameCode': gameCode}, broadcast=True)
 
@@ -479,6 +499,53 @@ def get_players_left(data):
     emit('Send Players Left', {'sessionId': session_id, 'playersLeft': players_left}, broadcast=True)
 
 
+@socketio.on('Get Teams Leaderboard')
+def get_teams_leaderboard(data):
+    session_id = data['sessionId']
+
+    query = 'SELECT host, gameCode, teamId FROM adityacasturi_connections WHERE sessionId = %s'
+    query_vars = (session_id,)
+    result = execute_query(query, query_vars)
+    game_code = result[0]['gameCode']
+    team_id = result[0]['teamId']
+    host = result[0]['host']
+
+    query = 'SELECT teams FROM adityacasturi_games WHERE gameCode = %s'
+    query_vars = (game_code,)
+    t = int(execute_query(query, query_vars)[0]['teams'])
+
+    tms = []
+    points = []
+
+    if t == 1:
+        t = 2
+    print(t)
+    for i in range(t):
+        query = 'SELECT points FROM adityacasturi_connections WHERE gameCode = %s AND teamId = %s'
+        query_vars = (game_code, str(i + 1),)
+        result = execute_query(query, query_vars)
+        print(result)
+        pts = result[0]['points']
+        points.append(pts)
+        tms.append(i + 1)
+
+    for i in range(0, len(points)):
+        for j in range(i + 1, len(points)):
+            if points[i] < points[j]:
+                temp = points[i]
+                temp2 = tms[i]
+                points[i] = points[j]
+                tms[i] = tms[j]
+                points[j] = temp
+                tms[j] = temp2
+
+    place = ordinal(int(tms.index(team_id) + 1))
+
+    emit('Send Teams Leaderboard', {'sessionId': session_id, 'teams': tms, 'points': points,
+                                    'teamId': team_id, 'place': place,
+                                    'host': host, 'gameCode': game_code}, broadcast=True)
+
+
 def ordinal(n):
     return str(n) + {1: 'st', 2: 'nd', 3: 'rd'}.get(4 if 10 <= n % 100 < 20 else n % 10, "th")
 
@@ -507,4 +574,4 @@ def generate_location():
 
 
 if __name__ == '__main__':
-    socketio.run(app, host='192.168.86.45')
+    socketio.run(app, host='10.83.29.137')

@@ -5,6 +5,7 @@
       <Languages>
         <language minSize="101" name="Style Sheets" />
         <language minSize="683" name="JavaScript" />
+        <language minSize="68" name="Python" />
       </Languages>
     </inspection_tool>
     <inspection_tool class="PyPep8NamingInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
