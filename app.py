@@ -66,6 +66,11 @@ def versus():
     return render_template('versus.html')
 
 
+@app.route('/hardcore')
+def hardcore():
+    return render_template('hardcore.html')
+
+
 @app.route('/battle-royale')
 def battle_royale():
     return render_template('battle-royale.html')
@@ -79,6 +84,11 @@ def versus_lobby():
 @app.route('/battle-royale-lobby')
 def battle_royale_lobby():
     return render_template('battle-royale-lobby.html')
+
+
+@app.route('/hardcore-lobby')
+def hardcore_lobby():
+    return render_template('hardcore-lobby.html')
 
 
 @app.route('/versus-waiting')
