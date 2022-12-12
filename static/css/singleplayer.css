@@ -139,7 +139,7 @@ html, body {
     position: absolute;
     width: fit-content;
     height: fit-content;
-    background: #C21806;
+    background: black;
     top: 0;
     right: 0;
     z-index: 1;

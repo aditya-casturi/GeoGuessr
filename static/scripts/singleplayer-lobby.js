@@ -1,8 +1,10 @@
 window.onload = function () {
     let socket = io.connect();
+    $('.outer').hide().fadeIn(1250);
 
     socket.on('connect', function () {
         document.getElementById('play-button').onclick = function () {
+            $('#play-button').text('Loading...');
             let sessionId = generateSessionID();
             let rounds = document.getElementById('rounds-selector').value
 

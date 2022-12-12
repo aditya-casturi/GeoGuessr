@@ -4,6 +4,8 @@ $(document).ready(function () {
     const sessionId = generateUUID();
     const nameBox = $('#name');
 
+    $('.outer').hide().fadeIn(1250);
+
     $('#play-button').click(function() {
         const username = nameBox.val();
         if (username === '') {

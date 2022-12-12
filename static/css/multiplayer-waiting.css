@@ -64,11 +64,11 @@ body {
     margin-top: 10px;
 }
 
-#subtitle:hover {
+#subtitle:hover, #add:hover {
     animation: scale 200ms ease-in-out forwards;
 }
 
-#subtitle:not(:hover) {
+#subtitle:not(:hover), #add:not(:hover) {
     animation: shrink 200ms ease-in-out forwards;
 }
 
@@ -160,8 +160,9 @@ i:hover {
     vertical-align: top;
     display: inline-block;
     width: 150px;
-    height: 200px;
+    height: fit-content;
     border: 3px solid black;
+    border-radius: 15px;
     margin: 10px;
     cursor: pointer;
     padding: 10px;
@@ -169,8 +170,12 @@ i:hover {
     font-size: 25pt;
 }
 
+.team:hover {
+    border-color: #C21806;
+}
+
 .teams-container {
     width: 100%;
     text-align: center;
-    margin-top: 500px;
+    margin-top: 350px;
 }

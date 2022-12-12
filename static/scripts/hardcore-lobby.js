@@ -1,5 +1,6 @@
 window.onload = function () {
     let socket = io.connect();
+    $('.outer').hide().fadeIn(1250);
 
     socket.on('connect', function () {
         document.getElementById('play-button').onclick = function () {

@@ -24,11 +24,16 @@ body {
     color: black;
 }
 
-#description {
-    color: #C21806;
+#description, #mode-description {
+    color: black;
     font-family: futura-pt, sans-serif;
     font-size: 20pt;
     margin-top: 5px;
+}
+
+#mode-description {
+    color: #C21806;
+    font-size: 15pt;
 }
 
 #play-button {
@@ -82,7 +87,7 @@ body {
 
 .logo {
     width: fit-content;
-    height: 100%;
+    height: 95%;
     object-fit: cover;
     overflow: hidden;
     user-select: none;
@@ -96,7 +101,7 @@ body {
     user-select: none;
     float: right;
     margin-right: 30px;
-    margin-top: 20px;
+    margin-top: 15px;
     font-family: futura-pt, sans-serif;
     font-weight: bold;
     color: black;

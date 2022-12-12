@@ -6,6 +6,7 @@ $(document).ready(function () {
     const nameBox = $('#name');
     const joinButton = $('#join')
 
+    $('.outer').hide().fadeIn(1250);
 
     joinButton.click(function () {
         redirect();

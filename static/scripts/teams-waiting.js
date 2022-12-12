@@ -15,6 +15,8 @@ $(document).ready(function () {
     document.body.style.visibility = 'hidden';
     $('#loader').css('visibility', 'visible')
     socket.on('connect', function () {
+        $('.outer').css('top', '35%');
+        $('#title').css('color', 'black');
         socket.emit('Get Session Data', {'sessionId': sessionId})
 
         socket.on('Send Session Data', function (data) {
@@ -41,7 +43,7 @@ $(document).ready(function () {
 
                     subtitle.css('margin-left', '600px')
                     subtitle.css('margin-right', '600px')
-                    subtitle.css('border', '3px solid black')
+                    subtitle.css('border', '2px solid black')
 
                     subtitle.click(function () {
                         socket.emit('Generate Location', {'gameCode': gameCode})
@@ -69,6 +71,7 @@ $(document).ready(function () {
 
                         for (let i = 0; i < teamIds.length; i++) {
                             document.getElementById(teamIds[i]).innerHTML = document.getElementById(teamIds[i]).innerHTML + usernames[i] + "<br>";
+                            $(String(teamIds[i])).hide();
                         }
                     }
 
@@ -114,11 +117,13 @@ $(document).ready(function () {
 
         function addTeam() {
             teams = teams + 1;
-            if (teams % 4 === 0) {
-                $('.teams-container').append("<div class=\"team\" id=\'" + teams + "\'>Team " + teams + "<br></div><br>")
+            $('.teams-container').append("<div class=\"team\" id=\'" + teams + "\'><b><u>Team " +
+                    teams + "</u></b><br></div>")
 
-            } else {
-                $('.teams-container').append("<div class=\"team\" id=\'" + teams + "\'>Team " + teams + "<br></rb></div>")
+            $('#' + teams).hide().fadeIn(1000);
+
+            if (teams % 5 === 0) {
+                $('.teams-container').append("<br>")
             }
         }
 
