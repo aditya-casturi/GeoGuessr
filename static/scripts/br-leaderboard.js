@@ -11,17 +11,16 @@ window.onload = function() {
 
         socket.on('Send Leaderboard', function (data) {
             if (data['sessionId'] === sessionId) {
-                let scoreboard = data['scoreboard'];
+                let leaderboard = data['leaderboard'];
                 let gameCode = data['gameCode'];
                 let host = data['host'];
                 let gameOver = data['gameOver'];
                 let username = data['username'];
+                let status = data['points'];
                 let eliminated;
+
                 let brInfo = $("#br-info");
                 let info = $("#info");
-
-                console.log(scoreboard)
-
                 const nameDisplay = $('#name-display');
                 const pointsDisplay = $('#points-display');
                 const continueButton = $('#continue-button');
@@ -29,7 +28,7 @@ window.onload = function() {
                 nameDisplay.text(username);
                 nameDisplay.css('visibility', 'visible');
 
-                if (scoreboard[scoreboard.length - 1].includes(username + " ")) {
+                if (status === 'ELIMINATED') {
                     eliminated = true;
                     showBackButtons();
                     brInfo.text('ELIMINATED.');
@@ -40,8 +39,8 @@ window.onload = function() {
                     brInfo.css('color', 'black');
                 }
 
-                let plural = scoreboard.length > 1 ? 's' : '';
-                info.text(scoreboard.length - 1 + ' ' + plural + ' remaining.');
+                let plural = leaderboard.length > 1 ? 's' : '';
+                info.text(leaderboard.length - 1 + ' player' + plural + ' remaining.');
                 info.css('visibility', 'visible');
                 pointsDisplay.text(gameCode);
                 pointsDisplay.css('visibility', 'visible');
@@ -83,7 +82,7 @@ window.onload = function() {
                     continueButton.css('background', 'transparent')
                     continueButton.css('color', 'black')
                     continueButton.css('pointer-events', 'none')
-                    continueButton.text('Game over')
+                    continueButton.text('Game Over')
                     $('#lobby-button').css('visibility', 'visible');
                 }
             }

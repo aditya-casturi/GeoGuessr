@@ -68,7 +68,10 @@ function initialize() {
                     document.getElementById("street-view"), {
                         disableDefaultUI: true, addressControl: false,
                         showRoadLabels: false, position: answerLatLong,
-                        pov: {heading: 34, pitch: 10}
+                        pov: {heading: 34, pitch: 10},
+                        panControl: false,
+                        clickToGo: false,
+                        scrollwheel: false,
                     }
                 );
 
@@ -134,7 +137,7 @@ function initialize() {
                         'answerLat': answerLatLong.lat(), 'answerLong': answerLatLong.lng()})
 
                     // Redirect to the recap page
-                    window.location.href = '/recap?sessionId=' + sessionId + "&mode=sp";
+                    window.location.href = '/recap?sessionId=' + sessionId + "&mode=h";
                 })
 
                 // Place a marker on the map at the specified location

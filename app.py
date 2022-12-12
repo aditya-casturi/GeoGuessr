@@ -11,7 +11,7 @@ app.config['SECRET_KEY'] = 'secret!'
 app.config['MYSQL_HOST'] = 'mysql.2223.lakeside-cs.org'
 app.config['MYSQL_USER'] = 'student2223'
 app.config['MYSQL_PASSWORD'] = 'm545CS42223'
-app.config['MYSQL_DB'] = '2223project'
+app.config['MYSQL_DB'] = '2223project_1'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 app.debug = True
 socketio = SocketIO(app)
@@ -112,10 +112,12 @@ def battle_royale_waiting():
 
 
 @socketio.on('Create Game')
-def create_singleplayer_game(data):
+def create_game(data):
     session_id = data['sessionId']
     rounds = data['rounds']
     mode = data['mode']
+
+    print("here")
 
     location = generate_location()
     lat = location['lat']
@@ -123,6 +125,8 @@ def create_singleplayer_game(data):
     game_code = generate_game_code()
     if mode == 'sp':
         username = "SingleplayerSession" + str(session_id)
+    elif mode == 'h':
+        username = 'HardcoreSession' + str(session_id)
     else:
         username = data['username']
 
@@ -238,34 +242,23 @@ def generate_next_location(data):
     query_vars = (lat, long, gameCode,)
     execute_query(query, query_vars)
 
-    query = 'SELECT mode FROM adityacasturi_games WHERE gameCode = %s'
-    mode = execute_query(query, (gameCode,))[0]['mode']
+    query = 'DELETE FROM adityacasturi_guesses WHERE gameCode = %s'
+    execute_query(query, (gameCode,))
+
+    query = 'SELECT rounds, roundsLeft, mode FROM adityacasturi_games WHERE gameCode = %s'
+    result = execute_query(query, (gameCode,))[0]
+    mode = result['mode']
 
     if mode == 'br' and gameCode in to_delete != "":
-        query = 'DELETE FROM adityacasturi_connections WHERE username = %s'
-        execute_query(query, (to_delete[gameCode],))
-        query = 'UPDATE adityacasturi_connections SET points = 0 WHERE gameCode = %s'
-        execute_query(query, (gameCode,))
-    elif mode == 't':
-        query = 'SELECT teamId FROM adityacasturi_connections WHERE gameCode = %s'
-        teamIds = execute_query(query, (gameCode,))
+        query = 'DELETE FROM adityacasturi_connections WHERE username = %s; ' \
+                'UPDATE adityacasturi_connections SET points = 0 WHERE gameCode = %s'
+        execute_query(query, (to_delete[gameCode], gameCode))
+    elif mode == 't' and result['roundsLeft'] == result['rounds']:
+        query = 'SELECT DISTINCT teamId FROM adityacasturi_connections WHERE gameCode = %s'
+        trueNumberOfTeams = len(execute_query(query, (gameCode,)))
 
-        uniqueIds = []
-        for teamId in teamIds:
-            if teamId not in uniqueIds:
-                uniqueIds.append(teamId)
-
-        trueNumberOfTeams = len(uniqueIds)
         query = 'UPDATE adityacasturi_games SET teams = %s WHERE gameCode = %s'
         execute_query(query, (trueNumberOfTeams, gameCode,))
-
-        if 'sessionId' in data:
-            session_id = data['sessionId']
-            query = 'SELECT teamId FROM adityacasturi_connections WHERE sessionId = %s'
-            team_id = execute_query(query, (session_id,))[0]['teamId']
-
-            query = 'DELETE FROM adityacasturi_guesses WHERE teamId = %s AND gameCode = %s'
-            execute_query(query, (team_id, gameCode,))
 
     emit('Start Game', {'gameCode': gameCode}, broadcast=True)
 
@@ -287,8 +280,7 @@ def validate_code(data):
     username = data['username']
 
     query = 'SELECT * FROM adityacasturi_games WHERE gameCode = %s'
-    query_vars = (game_code,)
-    result = execute_query(query, query_vars)
+    result = execute_query(query, (game_code,))
     if len(result) != 0:
         query = 'INSERT INTO adityacasturi_connections (sessionId, username, gameCode, points, host) ' \
                 'VALUES (%s, %s, %s, %s, %s)'
@@ -324,75 +316,53 @@ def get_leaderboard(data):
     host = result['host']
 
     query = 'SELECT roundsLeft FROM adityacasturi_games WHERE gameCode = %s'
-    query_vars = (gameCode,)
-    rounds_left = int(execute_query(query, query_vars)[0]['roundsLeft'])
+    rounds_left = int(execute_query(query, (gameCode,))[0]['roundsLeft'])
 
-    query = 'SELECT username, points FROM adityacasturi_connections WHERE gameCode = %s'
-    query_vars = (gameCode,)
-    scores = execute_query(query, query_vars)
+    query = 'SELECT username, points FROM adityacasturi_connections WHERE gameCode = %s ORDER BY points DESC LIMIT 5'
+    scores = execute_query(query, (gameCode,))
+
+    place = 0
+    user_points = 0
+    leaderboard = []
+    for score in scores:
+        leaderboard.append({'username': score['username'], 'points': score['points']})
+        if score['username'] == curr_username:
+            user_points = score['points']
+            place = ordinal(scores.index(score) + 1)
 
     query = 'SELECT username FROM adityacasturi_connections WHERE gameCode = %s AND host = %s'
     query_vars = (gameCode, 'true')
     host_username = execute_query(query, query_vars)[0]['username']
 
-    usernames = []
-    points = []
-
-    for score in scores:
-        usernames.append(score['username'])
-        points.append(score['points'])
-
-    for i in range(0, len(points)):
-        for j in range(i + 1, len(points)):
-            if points[i] < points[j]:
-                temp = points[i]
-                temp2 = usernames[i]
-                points[i] = points[j]
-                usernames[i] = usernames[j]
-                points[j] = temp
-                usernames[j] = temp2
-
+    br_leaderboard = []
     if mode == 'br':
-        scoreboard = []
-
-        for i in range(0, len(points) - 1):
-            scoreboard.append(usernames[i] + " SAFE")
-        scoreboard.append(usernames[len(points) - 1] + " ELIMINATED")
+        for i in range(len(leaderboard) - 1):
+            br_leaderboard.append({'username': leaderboard[i]['username'], 'status': 'SAFE'})
+            if leaderboard[i]['username'] == curr_username:
+                user_points = 'SAFE'
+        br_leaderboard.append({'username': leaderboard[-1]['username'], 'status': 'SAFE'})
+        if leaderboard[-1]['username'] == curr_username:
+            user_points = 'ELIMINATED'
 
         global to_delete
-        to_delete[gameCode] = usernames[len(points) - 1]
+        print(str(br_leaderboard))
+        to_delete[gameCode] = br_leaderboard[-2]['username']
 
-        if host_username == usernames[len(points) - 1]:
+        if host_username == br_leaderboard[-1]['username']:
             query = 'UPDATE adityacasturi_connections SET host = %s WHERE username = %s'
-            execute_query(query, ('true', usernames[0],))
+            execute_query(query, ('true', br_leaderboard[0]['username'],))
 
-        if curr_username == usernames[0] and host_username == usernames[len(points) - 1]:
+        if curr_username == br_leaderboard[0]['username'] and host_username == br_leaderboard[-1]['username']:
             host = 'true'
 
-        if len(usernames) == 2:
-            emit('Send Leaderboard', {'scoreboard': scoreboard, 'sessionId': session_id,
-                                      'gameCode': gameCode, 'host': host, 'gameOver': 'true',
-                                      'username': curr_username}, broadcast=True)
-        else:
-            emit('Send Leaderboard', {'scoreboard': scoreboard, 'sessionId': session_id,
-                                      'gameCode': gameCode, 'host': host, 'gameOver': 'false',
-                                      'username': curr_username}, broadcast=True)
+        game_over = 'true' if len(br_leaderboard) == 2 else 'false'
     else:
-        scoreboard = []
-        for i in range(len(usernames)):
-            scoreboard.append(str(usernames[i]) + " " + str(points[i]))
+        game_over = 'true' if rounds_left - 1 == 0 else 'false'
 
-        place = ordinal(int(usernames.index(curr_username) + 1))
-        user_points = points[usernames.index(curr_username)]
-
-        if rounds_left - 1 == 0:
-            emit('Send Leaderboard', {'scoreboard': scoreboard, 'sessionId': session_id,
-                                      'place': place, 'points': user_points, 'gameCode': gameCode,
-                                      'host': host, 'gameOver': 'true', 'username': curr_username}, broadcast=True)
-        else:
-            emit('Send Leaderboard', {'scoreboard': scoreboard, 'sessionId': session_id,
-                                      'place': place, 'points': user_points, 'gameCode': gameCode,
-                                      'host': host, 'gameOver': 'false', 'username': curr_username}, broadcast=True)
+    finalLeaderboard = br_leaderboard if mode == 'br' else leaderboard
+    emit('Send Leaderboard', {'leaderboard': finalLeaderboard, 'sessionId': session_id,
+                              'place': place, 'points': user_points, 'gameCode': gameCode,
+                              'host': host, 'gameOver': game_over, 'username': curr_username}, broadcast=True)
 
 
 @socketio.on('Player Joined Team')
@@ -416,8 +386,9 @@ def get_teams(data):
     game_code = data['gameCode']
     session_id = data['sessionId']
 
-    query = 'SELECT username, teamId FROM adityacasturi_connections WHERE gameCode = %s'
-    query_vars = (game_code,)
+    query = 'SELECT username, teamId, teams FROM adityacasturi_connections INNER JOIN adityacasturi_games ' \
+            'ON adityacasturi_connections.gameCode = %s WHERE adityacasturi_games.gameCode = %s;'
+    query_vars = (game_code, game_code,)
     result = execute_query(query, query_vars)
 
     usernames = []
@@ -427,12 +398,8 @@ def get_teams(data):
         usernames.append(row['username'])
         team_ids.append(row['teamId'])
 
-    query = 'SELECT teams FROM adityacasturi_games WHERE gameCode = %s'
-    query_vars = (game_code,)
-    t = int(execute_query(query, query_vars)[0]['teams'])
-
     emit('Send Teams', {'usernames': usernames, 'teamIds': team_ids,
-                        'sessionId': session_id, 'teams': t}, broadcast=True)
+                        'sessionId': session_id, 'teams': result[0]['teams']}, broadcast=True)
 
 
 @socketio.on('Team Created')
@@ -454,8 +421,7 @@ def teammate_marker_placed(data):
     long = data['long']
 
     query = 'SELECT teamId FROM adityacasturi_connections WHERE sessionId = %s'
-    query_vars = (session_id,)
-    team_id = execute_query(query, query_vars)[0]['teamId']
+    team_id = execute_query(query, (session_id,))[0]['teamId']
 
     emit('Update Teammate Marker', {'sessionId': session_id, 'gameCode': game_code,
                                     'lat': lat, 'long': long, 'teamId': team_id}, broadcast=True)
@@ -466,10 +432,9 @@ def get_team_guesses(data):
     session_id = data['sessionId']
 
     query = 'SELECT gameCode, teamId FROM adityacasturi_connections WHERE sessionId = %s'
-    query_vars = (session_id,)
-    result = execute_query(query, query_vars)
-    game_code = result[0]['gameCode']
-    team_id = result[0]['teamId']
+    result = execute_query(query, (session_id,))[0]
+    game_code = result['gameCode']
+    team_id = result['teamId']
 
     query = 'SELECT * FROM adityacasturi_guesses WHERE gameCode = %s AND teamId = %s'
     query_vars = (game_code, team_id,)
@@ -486,11 +451,11 @@ def submit_team_guess(data):
     answer_lat = data['answerLat']
     answer_long = data['answerLong']
     game_code = data['gameCode']
-    teamId = data['teamId']
+    team_id = data['teamId']
 
     query = 'INSERT INTO adityacasturi_guesses (sessionId, guessLat, guessLong, answerLat, ' \
             'answerLong, gameCode, teamId) VALUES (%s, %s, %s, %s, %s, %s, %s)'
-    query_vars = (session_id, guess_lat, guess_long, answer_lat, answer_long, game_code, teamId,)
+    query_vars = (session_id, guess_lat, guess_long, answer_lat, answer_long, game_code, team_id,)
     execute_query(query, query_vars)
 
 
@@ -498,12 +463,9 @@ def submit_team_guess(data):
 def get_players_left(data):
     session_id = data['sessionId']
 
-    query = 'SELECT gameCode FROM adityacasturi_connections WHERE sessionId = %s'
+    query = 'SELECT COUNT(*) FROM adityacasturi_connections WHERE gameCode = ' \
+            '(SELECT gameCode FROM adityacasturi_connections WHERE sessionId = %s)'
     query_vars = (session_id,)
-    game_code = execute_query(query, query_vars)[0]['gameCode']
-
-    query = 'SELECT COUNT(*) FROM adityacasturi_connections WHERE gameCode = %s'
-    query_vars = (game_code,)
     players_left = execute_query(query, query_vars)[0]['COUNT(*)']
 
     emit('Send Players Left', {'sessionId': session_id, 'playersLeft': players_left}, broadcast=True)
@@ -513,47 +475,30 @@ def get_players_left(data):
 def get_teams_leaderboard(data):
     session_id = data['sessionId']
 
-    query = 'SELECT host, gameCode, teamId FROM adityacasturi_connections WHERE sessionId = %s'
-    query_vars = (session_id,)
-    result = execute_query(query, query_vars)
-    game_code = result[0]['gameCode']
-    team_id = result[0]['teamId']
-    host = result[0]['host']
+    query = 'SELECT host, gameCode, teamId, points FROM adityacasturi_connections WHERE sessionId = %s'
+    user_info = execute_query(query, (session_id,))[0]
 
-    query = 'SELECT teams FROM adityacasturi_games WHERE gameCode = %s'
-    query_vars = (game_code,)
-    t = int(execute_query(query, query_vars)[0]['teams'])
+    query = 'SELECT roundsLeft FROM adityacasturi_games WHERE gameCode = %s'
+    rounds_left = execute_query(query, (user_info['gameCode'],))[0]['roundsLeft']
+    game_over = 'true' if rounds_left - 1 == 0 else 'false'
 
-    tms = []
-    points = []
+    teams_leaderboard = []
+    place = 0
 
-    if t == 1:
-        t = 2
-    print(t)
-    for i in range(t):
-        query = 'SELECT points FROM adityacasturi_connections WHERE gameCode = %s AND teamId = %s'
-        query_vars = (game_code, str(i + 1),)
-        result = execute_query(query, query_vars)
-        print(result)
-        pts = result[0]['points']
-        points.append(pts)
-        tms.append(i + 1)
+    query = 'SELECT DISTINCT points, teamId FROM adityacasturi_connections WHERE gameCode = %s ' \
+            'ORDER BY points DESC LIMIT 5'
+    result = execute_query(query, (user_info['gameCode'],))
 
-    for i in range(0, len(points)):
-        for j in range(i + 1, len(points)):
-            if points[i] < points[j]:
-                temp = points[i]
-                temp2 = tms[i]
-                points[i] = points[j]
-                tms[i] = tms[j]
-                points[j] = temp
-                tms[j] = temp2
+    for row in result:
+        print(row)
+        if row['teamId'] == user_info['teamId']:
+            place = ordinal(result.index(row) + 1)
+        teams_leaderboard.append({'teamId': row['teamId'], 'points': row['points']})
 
-    place = ordinal(int(tms.index(team_id) + 1))
-
-    emit('Send Teams Leaderboard', {'sessionId': session_id, 'teams': tms, 'points': points,
-                                    'teamId': team_id, 'place': place,
-                                    'host': host, 'gameCode': game_code}, broadcast=True)
+    emit('Send Teams Leaderboard', {'sessionId': session_id, 'teamsLeaderboard': teams_leaderboard,
+                                    'gameOver': game_over, 'teamId': user_info['teamId'], 'place': place,
+                                    'points': user_info['points'], 'host': user_info['host'],
+                                    'gameCode': user_info['gameCode']}, broadcast=True)
 
 
 def ordinal(n):
@@ -574,7 +519,7 @@ def generate_game_code():
 
 
 def generate_location():
-    with open("static/data/worldcities.csv", "r") as cities:
+    with open("static/data/locations.csv", "r") as cities:
         csv_reader = csv.reader(cities)
         next(csv_reader)
         chosen_row = random.choice(list(csv_reader))
@@ -584,4 +529,4 @@ def generate_location():
 
 
 if __name__ == '__main__':
-    socketio.run(app, host='10.83.29.137')
+    socketio.run(app, host='192.168.86.45')

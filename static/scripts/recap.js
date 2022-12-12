@@ -132,6 +132,7 @@ function initialize() {
 
                     let validGuess = true;
                     let answer = new google.maps.LatLng(answerLat, answerLong);
+                    console.log(data);
 
                     const icon = {
                         url: 'https://www.geoguessr.com/_next/static/images/correct-location-4da7df904fc6b08ce841e4ce63cd8bfb.png',
@@ -149,14 +150,10 @@ function initialize() {
                         position: answer, map: map, cursor: 'crosshair', icon: icon
                     });
 
-
-
                     for (const guess of guesses) {
                         let guessLat = parseFloat(guess['guessLat']);
                         let guessLong = parseFloat(guess['guessLong']);
                         let userGuess = new google.maps.LatLng(guessLat, guessLong);
-
-
 
                         let points;
                         let distance;
@@ -204,9 +201,7 @@ function initialize() {
 
                             line.setMap(map);
 
-
-
-                            if (points > highestPoints) {
+                            if (points >= highestPoints) {
                                 highestPoints = points;
                                 bestBounds = bounds;
                                 bestCenter = center;
@@ -215,8 +210,9 @@ function initialize() {
                         }
                     }
 
-
+                    console.log(bestBounds)
                     map.fitBounds(bestBounds);
+                    console.log('here');
                     map.setCenter(bestCenter);
                     map.setZoom(5);
 
