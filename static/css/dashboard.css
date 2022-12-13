@@ -75,7 +75,7 @@ html, body{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr;
-    gap: 15px 0;
+    gap: 25px 0;
     grid-auto-flow: row;
     align-content: center;
     justify-items: center;
@@ -84,4 +84,6 @@ html, body{
     ". . .";
 
     margin-top: 30px;
+    margin-right: 20px;
+    margin-left: 20px;
 }

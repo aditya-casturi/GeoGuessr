@@ -51,6 +51,7 @@ $(document).ready(function () {
                     })
                 } else {
                     $('#title').text("You're in!");
+                    $('#subtitle').css('color', '#C21806')
                     subtitle.text("Wait for the host to start the game.");
                 }
 

@@ -136,12 +136,12 @@ def create_game(data):
 
     if mode != 't':
         query = 'INSERT INTO adityacasturi_games (gameCode, currentRoundLat, currentRoundLong, rounds, roundsLeft, ' \
-                'mode) ' \
-                'VALUES (%s, %s, %s, %s, %s, %s)'
+                'mode, players, guessesSubmitted) ' \
+                'VALUES (%s, %s, %s, %s, %s, %s, 1, 0)'
     else:
         query = 'INSERT INTO adityacasturi_games (gameCode, currentRoundLat, currentRoundLong, rounds, roundsLeft, ' \
-                'mode, teams) ' \
-                'VALUES (%s, %s, %s, %s, %s, %s, 1)'
+                'mode, teams, players, guessesSubmitted) ' \
+                'VALUES (%s, %s, %s, %s, %s, %s, 1, 1, 0)'
     execute_query(query, (game_code, lat, long, rounds, rounds, mode,))
 
 
@@ -227,6 +227,25 @@ def submit_guess(data):
     execute_query(query, query_vars)
 
 
+@socketio.on('User Guessed')
+def user_guessed(data):
+    game_code = data['gameCode']
+    emit('Show Vignette', {'gameCode': game_code}, broadcast=True)
+
+    query = 'UPDATE adityacasturi_games SET guessesSubmitted = guessesSubmitted + 1 WHERE gameCode = %s'
+    execute_query(query, (game_code,))
+
+    query = 'SELECT players, guessesSubmitted FROM adityacasturi_games WHERE gameCode = %s'
+    result = execute_query(query, (game_code,))[0]
+    players = result['players']
+    guesses_submitted = result['guessesSubmitted']
+
+    if guesses_submitted == players:
+        emit('Go To Recap', {'gameCode': game_code}, broadcast=True)
+        query = 'UPDATE adityacasturi_games SET guessesSubmitted = 0 WHERE gameCode = %s'
+        execute_query(query, (game_code,))
+
+
 @socketio.on('Generate Location')
 def generate_next_location(data):
     global to_delete
@@ -263,6 +282,28 @@ def generate_next_location(data):
     emit('Start Game', {'gameCode': gameCode}, broadcast=True)
 
 
+@socketio.on('Get Game Code')
+def get_game_code(data):
+    session_id = data['sessionId']
+
+    query = 'SELECT gameCode FROM adityacasturi_connections WHERE sessionId = %s'
+    result = execute_query(query, (session_id,))
+    game_code = result[0]['gameCode']
+
+    emit('Send Game Code', {'gameCode': game_code, 'sessionId': session_id})
+
+
+@socketio.on('Get Team Id')
+def get_team_id(data):
+    session_id = data['sessionId']
+
+    query = 'SELECT teamId FROM adityacasturi_connections WHERE sessionId = %s'
+    result = execute_query(query, (session_id,))
+    team_id = result[0]['teamId']
+
+    emit('Send Team Id', {'teamId': team_id, 'sessionId': session_id})
+
+
 @socketio.on('Update Score')
 def update_score(data):
     session_id = data['sessionId']
@@ -288,6 +329,9 @@ def validate_code(data):
         execute_query(query, query_vars)
 
         mode = result[0]['mode']
+
+        query = 'UPDATE adityacasturi_games SET players = players + 1 WHERE gameCode = %s'
+        execute_query(query, (game_code,))
 
         emit('Code Valid', {'sessionId': session_id, 'mode': mode}, broadcast=True)
         emit('Player Joined', {'gameCode': game_code}, broadcast=True)
@@ -529,4 +573,4 @@ def generate_location():
 
 
 if __name__ == '__main__':
-    socketio.run(app, host='10.83.29.137')
+    socketio.run(app, host='192.168.86.45')

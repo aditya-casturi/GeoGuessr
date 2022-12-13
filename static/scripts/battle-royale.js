@@ -139,6 +139,8 @@ function initialize() {
                     guess.css('pointer-events', 'none');
                     guess.css('background', '#808080')
 
+                    socket.emit('User Guessed', {'gameCode': gameCode})
+
                     guessSubmitted = true;
 
                     if (!timerStarted) {
@@ -153,6 +155,37 @@ function initialize() {
                     }
                 })
 
+                socket.on('Show Vignette', function (data) {
+                    if (data['gameCode'] === gameCode) {
+                        $('.vignette').css('visibility', 'visible')
+                        $('.vignette').css('animation', 'fade-in 750ms ease-in-out forwards')
+                        setTimeout(function() {
+                            $('.vignette').css('animation', 'fade-out 750ms ease-in-out forwards')
+                        }, 500);
+                    }
+                });
+
+                socket.on('Go To Recap', function (data) {
+                    if (data['gameCode'] === gameCode) {
+                        goToRecap()
+                    }
+                });
+
+                function goToRecap() {
+                    guess.css('pointer-events', 'none');
+                    guess.css('background', '#808080');
+
+                    if (!guessSubmitted && !markerPlaced) {
+                        guessLatLong = new google.maps.LatLng(0, 0);
+                    }
+
+                    socket.emit('Submit Guess', {'sessionId': sessionId,
+                        'guessLat': guessLatLong.lat(), 'guessLong': guessLatLong.lng(),
+                        'answerLat': answerLatLong.lat(), 'answerLong': answerLatLong.lng()})
+
+                    window.location.href = "/recap?sessionId=" + sessionId + "&mode=br";
+                }
+
                 let countdown = $('#countdown');
                 function startTimer() {
                     document.getElementById("countdown").innerHTML = "0:15";
@@ -162,18 +195,7 @@ function initialize() {
                     let timeleft = 14;
                     setInterval(function () {
                         if (timeleft <= 0) {
-                            guess.css('pointer-events', 'none');
-                            guess.css('background', '#808080');
-
-                            if (!guessSubmitted && !markerPlaced) {
-                                guessLatLong = new google.maps.LatLng(0, 0);
-                            }
-
-                            socket.emit('Submit Guess', {'sessionId': sessionId,
-                                                        'guessLat': guessLatLong.lat(), 'guessLong': guessLatLong.lng(),
-                                                        'answerLat': answerLatLong.lat(), 'answerLong': answerLatLong.lng()})
-
-                            window.location.href = "/recap?sessionId=" + sessionId + "&mode=br";
+                            goToRecap();
                         } else {
                             if (timeleft >= 10) {
                                 countdown.text("0:" + timeleft);

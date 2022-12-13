@@ -132,7 +132,6 @@ function initialize() {
 
                     let validGuess = true;
                     let answer = new google.maps.LatLng(answerLat, answerLong);
-                    console.log(data);
 
                     const icon = {
                         url: 'https://www.geoguessr.com/_next/static/images/correct-location-4da7df904fc6b08ce841e4ce63cd8bfb.png',
@@ -240,6 +239,38 @@ function initialize() {
                 }
             });
         }
+
+        function redirect() {
+            if (mode === 'sp') {
+                window.location.href = baseUrl + "/singleplayer?sessionId=" + sessionId;
+            } else if (mode === 'h') {
+                window.location.href = baseUrl + "/hardcore?sessionId=" + sessionId;
+            } else if (mode === 'v') {
+                window.location.href = baseUrl + "/versus?sessionId=" + sessionId;
+            } else if (mode === 't') {
+                socket.emit('Get Team Id', {'sessionId': sessionId})
+
+                socket.on('Send Team Id', function (data) {
+                    if (data['sessionId'] === sessionId) {
+                        window.location.href = baseUrl + "/teams?sessionId=" + sessionId +
+                            "&teamId=" + data['teamId'];
+                    }
+                });
+            }
+        }
+
+        socket.on('Start Game', function (data) {
+            let gameCode = data['gameCode'];
+            socket.emit('Get Game Code', {'sessionId': sessionId})
+
+            socket.on('Send Game Code', function (data) {
+                if (data['sessionId'] === sessionId) {
+                    if (data['gameCode'] === gameCode) {
+                        redirect();
+                    }
+                }
+            });
+        });
     });
 }
 
