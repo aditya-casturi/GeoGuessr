@@ -6,16 +6,21 @@ html, body{
     background: #000;
 }
 
+:root {
+    --dark-blue: #202A45;
+    --light-blue: #455d7a;
+    --red: #C21806;
+    --dark-red: #460000;
+    --gray: #e6e6e6;
+    --banana-yellow: #FCAA67;
+    --purple: #3F2D55;
+}
+
 .earth {
     position: absolute;
     bottom: -250px;
     right: 50px;
     user-select: none;
-}
-
-#join {
-    color: white;
-    -webkit-text-stroke-width: 0;
 }
 
 .game-mode-container {
@@ -55,22 +60,22 @@ html, body{
 
 @keyframes expand {
     from { transform: scale(1); }
-    to { transform: scale(1.1); }
+    to { transform: scale(1.05); }
 }
 
 @keyframes condense {
-    from { transform: scale(1.1); }
+    from { transform: scale(1.05); }
     to { transform: scale(1); }
 }
 
 @keyframes fadeInUp {
     from {
-        transform: translate3d(0, 50px ,0);
+        transform: translate3d(0, 50px,0);
         opacity: 0;
     }
 
     to {
-        transform: translate3d(0, 0, 0);
+        transform: translate3d(0,0,0);
         opacity: 1
     }
 }

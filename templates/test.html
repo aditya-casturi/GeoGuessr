@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GeoGuessr</title>
+    <link rel="stylesheet" href="static/css/test.css">
+    <link rel="stylesheet" href="https://use.typekit.net/xtl8ngj.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    <script src="../static/scripts/dashboard.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <div class="game-mode-container">
+        <div class="game-mode" onclick="window.location.href = 'singleplayer-lobby'">CLASSIC</div>
+        <div class="game-mode" onclick="window.location.href = 'versus-lobby'">VERSUS</div>
+        <div class="game-mode" onclick="window.location.href = 'battle-royale-lobby'">BATTLE ROYALE</div>
+        <div class="game-mode" onclick="window.location.href = 'hardcore-lobby'">HARDCORE</div>
+        <div class="game-mode" id="join" onclick="window.location.href = 'join'">JOIN</div>
+        <div class="game-mode" onclick="window.location.href = 'teams-lobby'">TEAMS</div>
+    </div>
+    <img src="static/images/earth.jpg" alt="Earth" class="earth" draggable="false">
+</body>
+</html>

@@ -76,8 +76,7 @@ body {
 }
 
 .logo {
-    height: fit-content;
-    width: 20%;
+    height: 100%;
     object-fit: cover;
     overflow: hidden;
     user-select: none;

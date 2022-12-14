@@ -573,4 +573,4 @@ def generate_location():
 
 
 if __name__ == '__main__':
-    socketio.run(app, host='192.168.86.45')
+    socketio.run(app)
