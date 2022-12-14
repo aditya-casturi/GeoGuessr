@@ -1,5 +1,5 @@
 body {
-    background: #EEEEEE;
+    background: black;
     width: 100%;
     height: 100%;
     padding-top: 0;
@@ -20,19 +20,29 @@ body {
     user-select: none;
 }
 
+.earth {
+    position: absolute;
+    bottom: -275px;
+    right: 200px;
+    user-select: none;
+    width: 70%;
+    z-index: -1;
+    visibility: hidden;
+}
+
 .leaderboard-position {
     visibility: hidden;
     user-select: none;
     width: 700px;
     height: fit-content;
-    background: #EEEEEE;
+    background: white;
     display: table;
     font-family: futura-pt, sans-serif;
     font-size: 25pt;
     margin: 20px auto;
     padding: 10px 15px;
-    box-shadow: 5px 5px 5px grey;
-    color: #EEEEEE;
+    color: white;
+    border: 3px solid black;
 }
 
 .align-left {
@@ -46,6 +56,7 @@ body {
 #first-place {
     background: black;
     color: white;
+    border-color: white;
 }
 
 #continue-button, #lobby-button {
@@ -63,6 +74,18 @@ body {
     font-style: italic;
     margin: 50px auto 0;
     cursor: pointer;
+}
+
+@keyframes fadeInUp {
+    from {
+        transform: translate3d(0, 50px ,0);
+        opacity: 0;
+    }
+
+    to {
+        transform: translate3d(0, 0, 0);
+        opacity: 1
+    }
 }
 
 #continue-button:hover, #lobby-button:hover {
@@ -125,7 +148,7 @@ body {
 #info {
     visibility: hidden;
     width: fit-content;
-    color: #C21806;
+    color: white;
     margin: 20px auto;
     font-family: "futura-pt-condensed", sans-serif;
     font-size: 20pt;
@@ -150,7 +173,7 @@ body {
     right: 0;
 
     margin: auto;
-    border: 16px solid #808080;
+    border: 16px solid white;
     border-top: 16px solid black;
     border-radius: 50%;
     width: 60px;

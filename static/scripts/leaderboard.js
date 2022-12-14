@@ -66,8 +66,6 @@ window.onload = function() {
                     gameOver = data['gameOver'];
                     let username = data['username'];
 
-                    console.log(gameOver)
-
                     if (mode === 'classic' || mode === 'hardcore') {
                         leaderboard[0] = {'username': 'You', 'points': points};
                         nameDisplay.text("Filler");
@@ -111,7 +109,7 @@ window.onload = function() {
             console.log('gameOver=' + gameOver)
             if (gameOver === "true") {
                 continueButton.css('background', 'transparent')
-                continueButton.css('color', 'black')
+                continueButton.css('color', 'white')
                 continueButton.css('pointer-events', 'none')
                 continueButton.text('Game over')
                 $('#lobby-button').css('visibility', 'visible');
@@ -138,6 +136,8 @@ window.onload = function() {
             }
             info.css('visibility', 'visible');
             continueButton.css('visibility', 'visible')
+            $('.earth').css('visibility', 'visible')
+            $('.earth').css('animation', 'fadeInUp 1s ease-in-out');
         }
     });
 }
