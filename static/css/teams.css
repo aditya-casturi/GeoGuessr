@@ -198,6 +198,7 @@ html, body {
     box-shadow: 0 0 200px #C21806 inset;
     visibility: hidden;
     z-index: 1;
+    pointer-events: none;
 }
 
 @keyframes fade-in {

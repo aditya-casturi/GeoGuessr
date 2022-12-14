@@ -70,7 +70,7 @@ function initialize() {
                             coords = [guess, answer]
                         }
 
-                        const lineSymbol = {path: 'M 0, 2, 0, 1', strokeOpacity: 1, scale: 3, strokeColor: '#808080'};
+                        const lineSymbol = {path: 'M 0, 2, 0, 1', strokeOpacity: 1, scale: 1, strokeColor: '#808080'};
                         line = new google.maps.Polyline({
                             path: coords, strokeOpacity: 0, geodesic: false,
                             icons: [{icon: lineSymbol, offset: '0', repeat: '10px'}]
@@ -209,12 +209,9 @@ function initialize() {
                         }
                     }
 
-                    console.log(bestBounds)
                     map.fitBounds(bestBounds);
-                    console.log('here');
                     map.setCenter(bestCenter);
                     map.setZoom(5);
-
 
                     socket.emit('Update Score', {'sessionId': sessionId, 'points': highestPoints});
 
