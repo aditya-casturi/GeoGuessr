@@ -13,7 +13,7 @@ html, body {
 
     margin: auto;
     border: 16px solid #808080;
-    border-top: 16px solid #C21806;
+    border-top: 16px solid black;
     border-radius: 50%;
     width: 60px;
     height: 60px;
@@ -42,8 +42,8 @@ html, body {
 
 #map {
     position: absolute;
-    width: 250px;
     height: 175px;
+    width: 250px;
     border: 1px solid transparent;
     border-radius: 7px;
     bottom: 30px;
@@ -64,7 +64,7 @@ html, body {
     height: 175px;
     width: 250px;
     transition: height 0.15s, width 0.15s;
-    transition-delay: 1.5s;
+    transition-delay: 1s;
 }
 
 #map:hover + #guess {
@@ -75,7 +75,7 @@ html, body {
 #map:not(:hover) + #guess {
     width: 250px;
     transition: width 0.15s;
-    transition-delay: 1.5s;
+    transition-delay: 1s;
 }
 
 #guess {
@@ -135,6 +135,59 @@ html, body {
     user-select: none;
 }
 
+#game-info {
+    position: absolute;
+    width: fit-content;
+    height: fit-content;
+    background: white;
+    top: 0;
+    right: 0;
+    z-index: 1;
+    user-select: none;
+    font-family: futura-pt-condensed, sans-serif;
+    font-weight: bold;
+    font-size: 20pt;
+    color: black;
+    padding: 10px;
+}
+
+#mode-info {
+    position: absolute;
+    width: 100%;
+    height: fit-content;
+    background: black;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    user-select: none;
+    font-family: futura-pt-bold, sans-serif;
+    font-size: 20pt;
+    color: white;
+    padding: 10px;
+}
+
+.vignette {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 0 200px #C21806 inset;
+    z-index: 3;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+@keyframes fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes fade-out {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
 #countdown {
     width: 100px;
     height: fit-content;
@@ -153,60 +206,4 @@ html, body {
     vertical-align: middle;
     font-size: 16pt;
     visibility: hidden;
-}
-
-#round-info {
-    position: absolute;
-    width: fit-content;
-    height: fit-content;
-    background: #C21806;
-    top: 0;
-    right: 0;
-    z-index: 1;
-    user-select: none;
-    font-family: futura-pt-bold, sans-serif;
-    font-size: 20pt;
-    color: white;
-    padding: 10px;
-    border-bottom: 1px solid transparent;
-}
-
-#team-info {
-    position: absolute;
-    width: 100%;
-    height: fit-content;
-    background: black;
-    top: 0;
-    left: 0;
-    z-index: 1;
-    user-select: none;
-    font-family: futura-pt-bold, sans-serif;
-    font-size: 20pt;
-    color: white;
-    padding: 10px;
-    border-bottom: 1px solid transparent;
-    border-left: 1px solid transparent;
-    border-bottom-right-radius: 50px;
-}
-
-.vignette {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    box-shadow: 0 0 200px #C21806 inset;
-    visibility: hidden;
-    z-index: 1;
-    pointer-events: none;
-}
-
-@keyframes fade-in {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
-}
-
-@keyframes fade-out {
-    0% { opacity: 1; }
-    100% { opacity: 0; }
 }

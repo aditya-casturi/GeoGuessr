@@ -1,9 +1,18 @@
 body {
-    background: #EEEEEE;
+    background: black;
     width: 100%;
     height: 100%;
     padding-top: 0;
     margin: 0;
+}
+
+.earth {
+    position: absolute;
+    bottom: -275px;
+    right: 200px;
+    user-select: none;
+    width: 70%;
+    z-index: -1;
 }
 
 .inner {
@@ -27,48 +36,43 @@ body {
 
     margin: auto;
     border: 16px solid #808080;
-    border-top: 16px solid #C21806;
+    border-top: 16px solid white;
     border-radius: 50%;
     width: 60px;
     height: 60px;
     animation: spin 2s linear infinite;
 }
 
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
 #title {
-    font-family: futura-pt-bold, sans-serif;
-    font-weight: 700;
     font-style: italic;
-    color: #C21806;
-    font-size: 50pt;
     cursor: default;
     user-select: none;
+
+    font-family: futura-pt-condensed,sans-serif;
+    font-weight: 800;
+    font-size:65pt;
+    color: black;
+    -webkit-text-stroke-width: 3px;
+    -webkit-text-stroke-color: white;
+    letter-spacing: 2px;
 }
 
-#subtitle {
+#mode-name {
     font-family: futura-pt-condensed, sans-serif;
     font-weight: 400;
     font-style: italic;
     font-size: 25pt;
-    color: black;
+    color: white;
     user-select: none;
     background: transparent;
     margin-top: 10px;
 }
 
-#subtitle:hover, #add:hover {
+#mode-name:hover, #add:hover {
     animation: scale 200ms ease-in-out forwards;
 }
 
-#subtitle:not(:hover), #add:not(:hover) {
+#mode-name:not(:hover), #add:not(:hover) {
     animation: shrink 200ms ease-in-out forwards;
 }
 
@@ -101,12 +105,12 @@ body {
     position: absolute;
     color: white;
     margin: auto;
-    right: 15px;
-    top: 12px;
+    right: 30px;
+    top: 27px;
     font-family: futura-pt, sans-serif;
     font-weight: 400;
     font-style: italic;
-    font-size: 20pt;
+    font-size: 30pt;
     user-select: none;
 }
 
@@ -114,12 +118,12 @@ body {
     position: absolute;
     color: white;
     margin: auto;
-    left: 15px;
-    top: 12px;
+    left: 30px;
+    top: 27px;
     font-family: futura-pt, sans-serif;
     font-weight: 400;
     font-style: italic;
-    font-size: 20pt;
+    font-size: 30pt;
     user-select: none;
 }
 
@@ -128,7 +132,7 @@ i {
 }
 
 i:hover {
-    color: #C21806;
+    color: #4C95D9;
 }
 
 #players {
@@ -137,19 +141,19 @@ i:hover {
     font-style: normal;
     margin-top: 30px;
     font-size: 20pt;
-    color: #C21806;
+    color: white;
     word-spacing: 30px;
     user-select: none;
 }
 
 #add {
     padding: 10px;
-    background: #C21806;
+    background: black;
     font-family: futura-pt, sans-serif;
     font-weight: 400;
     font-style: normal;
-    font-size: 15pt;
-    border: 1px solid transparent;
+    font-size: 20pt;
+    border: 3px solid white;
     border-radius: 40px;
     margin: 10px 500px;
     cursor: pointer;
@@ -161,21 +165,40 @@ i:hover {
     display: inline-block;
     width: 150px;
     height: fit-content;
-    border: 3px solid black;
+    border: 3px solid white;
     border-radius: 15px;
     margin: 10px;
     cursor: pointer;
     padding: 10px;
     font-family: futura-pt-condensed, sans-serif;
     font-size: 25pt;
+    color: white;
+    background: black;
 }
 
 .team:hover {
-    border-color: #C21806;
+    border-color: #4C95D9;
 }
 
 .teams-container {
     width: 100%;
     text-align: center;
     margin-top: 350px;
+}
+
+@keyframes fadeInUp {
+    from {
+        transform: translate3d(0, 50px ,0);
+        opacity: 0;
+    }
+
+    to {
+        transform: translate3d(0, 0, 0);
+        opacity: 1
+    }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }

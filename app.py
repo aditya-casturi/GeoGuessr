@@ -26,9 +26,14 @@ def home():
     return render_template('dashboard.html')
 
 
-@app.route('/singleplayer-lobby')
-def singleplayer_lobby():
-    return render_template('singleplayer-lobby.html')
+@app.route('/lobby')
+def lobby():
+    return render_template('lobby.html')
+
+
+@app.route('/multiplayer-waiting-room')
+def multiplayer_waiting_room():
+    return render_template('multiplayer-waiting-room.html')
 
 
 @app.route('/singleplayer')
@@ -46,11 +51,6 @@ def join():
     return render_template('join.html')
 
 
-@app.route('/teams')
-def teams():
-    return render_template('teams.html')
-
-
 @app.route('/leaderboard')
 def leaderboard():
     return render_template('leaderboard.html')
@@ -61,54 +61,9 @@ def br_leaderboard():
     return render_template('br-leaderboard.html')
 
 
-@app.route('/versus')
-def versus():
-    return render_template('versus.html')
-
-
-@app.route('/hardcore')
-def hardcore():
-    return render_template('hardcore.html')
-
-
-@app.route('/battle-royale')
-def battle_royale():
-    return render_template('battle-royale.html')
-
-
-@app.route('/versus-lobby')
-def versus_lobby():
-    return render_template('versus-lobby.html')
-
-
-@app.route('/battle-royale-lobby')
-def battle_royale_lobby():
-    return render_template('battle-royale-lobby.html')
-
-
-@app.route('/hardcore-lobby')
-def hardcore_lobby():
-    return render_template('hardcore-lobby.html')
-
-
-@app.route('/versus-waiting')
-def versus_waiting():
-    return render_template('versus-waiting.html')
-
-
-@app.route('/teams-lobby')
-def teams_lobby():
-    return render_template('teams-lobby.html')
-
-
-@app.route('/teams-waiting')
-def teams_waiting():
-    return render_template('teams-waiting.html')
-
-
-@app.route('/battle-royale-waiting')
-def battle_royale_waiting():
-    return render_template('battle-royale-waiting.html')
+@app.route('/multiplayer')
+def multiplayer():
+    return render_template('multiplayer.html')
 
 
 @socketio.on('Create Game')
@@ -123,9 +78,9 @@ def create_game(data):
     lat = location['lat']
     long = location['long']
     game_code = generate_game_code()
-    if mode == 'sp':
+    if mode == 'classic':
         username = "SingleplayerSession" + str(session_id)
-    elif mode == 'h':
+    elif mode == 'hardcore':
         username = 'HardcoreSession' + str(session_id)
     else:
         username = data['username']
@@ -134,7 +89,7 @@ def create_game(data):
             'VALUES (%s, %s, 0, \'true\', %s)'
     execute_query(query, (session_id, game_code, username))
 
-    if mode != 't':
+    if mode != 'teams':
         query = 'INSERT INTO adityacasturi_games (gameCode, currentRoundLat, currentRoundLong, rounds, roundsLeft, ' \
                 'mode, players, guessesSubmitted) ' \
                 'VALUES (%s, %s, %s, %s, %s, %s, 1, 0)'
@@ -268,11 +223,11 @@ def generate_next_location(data):
     result = execute_query(query, (gameCode,))[0]
     mode = result['mode']
 
-    if mode == 'br' and gameCode in to_delete != "":
+    if mode == 'BR' and gameCode in to_delete != "":
         query = 'DELETE FROM adityacasturi_connections WHERE username = %s; ' \
                 'UPDATE adityacasturi_connections SET points = 0 WHERE gameCode = %s'
         execute_query(query, (to_delete[gameCode], gameCode))
-    elif mode == 't' and result['roundsLeft'] == result['rounds']:
+    elif mode == 'teams' and result['roundsLeft'] == result['rounds']:
         query = 'SELECT DISTINCT teamId FROM adityacasturi_connections WHERE gameCode = %s'
         trueNumberOfTeams = len(execute_query(query, (gameCode,)))
 
@@ -379,7 +334,7 @@ def get_leaderboard(data):
     host_username = execute_query(query, query_vars)[0]['username']
 
     br_leaderboard = []
-    if mode == 'br':
+    if mode == 'BR':
         for i in range(len(leaderboard) - 1):
             br_leaderboard.append({'username': leaderboard[i]['username'], 'status': 'SAFE'})
             if leaderboard[i]['username'] == curr_username:
@@ -403,7 +358,7 @@ def get_leaderboard(data):
     else:
         game_over = 'true' if rounds_left - 1 == 0 else 'false'
 
-    finalLeaderboard = br_leaderboard if mode == 'br' else leaderboard
+    finalLeaderboard = br_leaderboard if mode == 'BR' else leaderboard
     emit('Send Leaderboard', {'leaderboard': finalLeaderboard, 'sessionId': session_id,
                               'place': place, 'points': user_points, 'gameCode': gameCode,
                               'host': host, 'gameOver': game_over, 'username': curr_username}, broadcast=True)

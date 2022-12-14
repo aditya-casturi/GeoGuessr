@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GeoGuessr</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="../static/css/lobby.css">
+    <link rel="stylesheet" href="https://use.typekit.net/xtl8ngj.css">
+    <link rel="icon" type="image/x-icon" href="static/images/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    <script src="../static/scripts/lobby.js"></script>
+</head>
+<body>
+<div class="outer">
+    <div class="inner" id="mode-name"></div>
+    <input type="text" placeholder="Name" id="name" class="inner">
+    <div  id="wrapper" class="inner">
+        <div class="block" id="remove-round" onclick="updateRounds('remove')"><i class="fa fa-minus"></i></div>
+        <div class="block" id="rounds-counter">5 Rounds</div>
+        <div class="block" id="add-round" onclick="updateRounds('add')"><i class="fa fa-plus"></i></div>
+    </div>
+    <div class="inner" id="play-button">PLAY</div>
+</div>
+</body>
+</html>

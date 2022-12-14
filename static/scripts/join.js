@@ -44,13 +44,7 @@ $(document).ready(function () {
     socket.on('Code Valid', function (data) {
         if (sessionId === data['sessionId']) {
             let mode = data['mode'];
-            if (mode === 'br') {
-                window.location.href = '/battle-royale-waiting?sessionId=' + sessionId + '&mode=' + mode;
-            } else if (mode === 'v') {
-                window.location.href = baseUrl + "/versus-waiting?sessionId=" + sessionId + '&mode=' + mode;
-            } else if (mode === 't') {
-                window.location.href = baseUrl + "/teams-waiting?sessionId=" + sessionId + '&mode=' + mode;
-            }
+            window.location.href = '/multiplayer-waiting-room?sessionId=' + sessionId + '&mode=' + mode;
         }
     })
 

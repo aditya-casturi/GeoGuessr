@@ -6,19 +6,13 @@ window.onload = function() {
         }
     }
 
-    $(document).mouseover(function (e){
-        let c = ($(e.target).attr('class'));
-        if (c === 'game-mode') {
-            let html = $(e.target).text();
-            $(e.target).html('<i class="fa fa-location-dot"></i> ' + html);
-        }
+    $('.game-mode').hover(function (e){
+        let html = $(e.target).text();
+        $(e.target).html('<i class="fa fa-location-dot"></i> ' + html);
     });
 
-    $(document).mouseout(function (e){
-        let c = ($(e.target).attr('class'));
-        if (c === 'game-mode') {
-            let html = $(e.target).html();
-            $(e.target).html(html.replace('<i class="fa fa-location-dot"></i> ', ''));
-        }
+    $('.game-mode').mouseout(function (e){
+        let html = $(e.target).html();
+        $(e.target).html(html.replace('<i class="fa fa-location-dot"></i> ', ''));
     });
 }

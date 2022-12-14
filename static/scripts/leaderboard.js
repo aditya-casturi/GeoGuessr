@@ -16,7 +16,7 @@ window.onload = function() {
         const continueButton = $('#continue-button');
         const info = $('#info');
 
-        if (mode === 't') {
+        if (mode === 'teams') {
             socket.emit('Get Teams Leaderboard', {sessionId: sessionId});
 
             socket.on('Send Teams Leaderboard', function (data) {
@@ -48,7 +48,7 @@ window.onload = function() {
 
                     socket.on('Start Game', function (data) {
                         if (data['gameCode'] === gameCode) {
-                            window.location.href = baseUrl + "/teams?sessionId=" + sessionId + "&teamId=" + teamId;
+                            window.location.href = baseUrl + "/multiplayer?sessionId=" + sessionId + "&teamId=" + teamId + '&mode=teams';
                         }
                     })
                 }
@@ -68,16 +68,16 @@ window.onload = function() {
 
                     console.log(gameOver)
 
-                    if (mode === 'sp' || mode === 'h') {
+                    if (mode === 'classic' || mode === 'hardcore') {
                         leaderboard[0] = {'username': 'You', 'points': points};
                         nameDisplay.text("Filler");
                         nameDisplay.css('color', 'black');
-                    } else if (mode === 'v') {
+                    } else if (mode === 'versus') {
                         nameDisplay.text(username)
                     }
                     pointsDisplay.text(points + ' points');
 
-                    if (mode !== 'sp' && mode !== 'h') {
+                    if (mode !== 'classic' && mode !== 'hardcore') {
                         info.text('You are ' + place + ' place');
                     }
 
@@ -95,12 +95,10 @@ window.onload = function() {
 
                     socket.on('Start Game', function (data) {
                         if (data['gameCode'] === gameCode) {
-                            if (mode === 'sp') {
-                                window.location.href = baseUrl + "/singleplayer?sessionId=" + sessionId;
-                            } else if (mode === 'h') {
-                                window.location.href = baseUrl + "/hardcore?sessionId=" + sessionId;
-                            } else if (mode === 'v') {
-                                window.location.href = baseUrl + "/versus?sessionId=" + sessionId;
+                            if (mode === 'classic' || mode === 'hardcore') {
+                                window.location.href = baseUrl + "/singleplayer?sessionId=" + sessionId + '&mode=' + mode;
+                            } else if (mode === 'versus') {
+                                window.location.href = baseUrl + "/multiplayer?sessionId=" + sessionId + '&mode=' + mode;
                             }
                         }
                     })

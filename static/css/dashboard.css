@@ -9,8 +9,10 @@ html, body{
 .earth {
     position: absolute;
     bottom: -250px;
-    right: 50px;
+    right: 10px;
     user-select: none;
+    width: 70%;
+    z-index: -1;
 }
 
 #join {
@@ -21,7 +23,7 @@ html, body{
 .game-mode-container {
     position: absolute;
     left: 0;
-    top: 100px;
+    top: 75px;
     width: 100%;
     height: calc(100% - 100px);
     display: flex;

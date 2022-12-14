@@ -5,12 +5,18 @@ function initialize() {
     // Get the 'sessionId' parameter from the URL query string
     const params = new URLSearchParams(window.location.search);
     const sessionId = params.get('sessionId');
+    let mode = params.get('mode');
 
     // Define the center of the map
     const centerOfTheWorld = { lat: 38.087463014457136, lng: -41.98349121041763};
 
     // Keep track of whether the user has submitted a guess
     let guessSubmitted = false;
+    let teammateMarkers = {};
+    let teamId;
+    if (mode === 'teams') {
+        teamId = params.get('teamId');
+    }
 
     // Keep track of whether the user has placed a marker on the map
     let markerPlaced = false;
@@ -31,7 +37,6 @@ function initialize() {
         socket.on('Send Game Data', function (data) {
             // Make sure the message is for the correct session
             if (data['sessionId'] === sessionId) {
-
                 let gameCode = data['gameCode']
 
                 // Get the number of rounds and the rounds remaining from the message
@@ -39,7 +44,13 @@ function initialize() {
                 let rounds = data['rounds']
 
                 // Update the round display
-                $('#round-info').text("Round " + (rounds - roundsLeft + 1) + "/" + rounds)
+                if (mode === 'versus') {
+                    $('#game-info').text("Round " + (rounds - roundsLeft + 1) + "/" + rounds)
+                } else if (mode === 'teams') {
+                    $('#game-info').text("Team " + teamId);
+                }
+
+                $('#mode-info').text(mode.charAt(0).toUpperCase() + mode.slice(1));
 
                 // Get the correct location from the message
                 let lat = parseFloat(data['lat']);
@@ -90,10 +101,15 @@ function initialize() {
                         // Place a marker on the map at the location of the user's click
                         placeMarker(event.latLng);
 
+                        if (mode === 'teams') {
+                            socket.emit('Teammate Marker Placed', {'sessionId': sessionId, 'gameCode': gameCode,
+                                        'lat': event.latLng.lat(), 'long': event.latLng.lng()})
+                        }
+
                         // If there were no markers on the map before this click,
                         // change the color of the "guess" button to indicate that it can be clicked
                         if (empty) {
-                            guess.css('background', '#C21806');
+                            guess.css('background', 'black');
                         }
 
                         // Make the "guess" button clickable and change the cursor to a pointer
@@ -103,6 +119,8 @@ function initialize() {
 
                     // Set a flag to indicate that a marker has been placed on the map
                     markerPlaced = true;
+
+                    $('#guess').text('GUESS');
                 });
 
                 // Listen for when the user changes the viewpoint in the street view
@@ -117,22 +135,23 @@ function initialize() {
                     adjustCompassHeading()
                 });
 
-                socket.emit('Get Players Left', {sessionId: sessionId})
-
-                socket.on('Send Players Left', function (data) {
-                    if (data['sessionId'] === sessionId) {
-                        let plural = 'players';
-                        if (data['playersLeft'] === 1) {
-                            plural = 'player';
+                if (mode === 'BR') {
+                    socket.emit('Get Players Left', {sessionId: sessionId})
+                    socket.on('Send Players Left', function (data) {
+                        if (data['sessionId'] === sessionId) {
+                            let plural = 'players';
+                            if (data['playersLeft'] === 1) {
+                                plural = 'player';
+                            }
+                            $('#game-info').text(data['playersLeft'] + ' ' + plural + ' left')
+                            document.body.style.visibility = 'visible';
+                            $('#loader').css('visibility', 'hidden')
                         }
-                        $('#players-info').text(data['playersLeft'] + ' ' + plural + ' left')
-
-                        // Make the page visible and hide the loading spinner
-                        document.body.style.visibility = 'visible';
-                        $('#loader').css('visibility', 'hidden')
-                    }
-                });
-
+                    });
+                } else {
+                    document.body.style.visibility = 'visible';
+                    $('#loader').css('visibility', 'hidden')
+                }
 
                 let timerStarted = false
                 guess.click(function () {
@@ -155,19 +174,20 @@ function initialize() {
                     }
                 })
 
-                socket.on('Show Vignette', function (data) {
-                    if (data['gameCode'] === gameCode) {
-                        $('.vignette').css('visibility', 'visible')
-                        $('.vignette').css('animation', 'fade-in 750ms ease-in-out forwards')
-                        setTimeout(function() {
-                            $('.vignette').css('animation', 'fade-out 750ms ease-in-out forwards')
-                        }, 500);
-                    }
-                });
-
                 socket.on('Go To Recap', function (data) {
                     if (data['gameCode'] === gameCode) {
                         goToRecap()
+                    }
+                });
+
+                socket.on('Show Vignette', function (data) {
+                    const vignette = $('.vignette');
+                    if (data['gameCode'] === gameCode) {
+                        vignette.css('visibility', 'visible')
+                        vignette.css('animation', 'fade-in 750ms ease-in-out forwards')
+                        setTimeout(function() {
+                            vignette.css('animation', 'fade-out 750ms ease-in-out forwards')
+                        }, 500);
                     }
                 });
 
@@ -179,11 +199,18 @@ function initialize() {
                         guessLatLong = new google.maps.LatLng(0, 0);
                     }
 
-                    socket.emit('Submit Guess', {'sessionId': sessionId,
-                        'guessLat': guessLatLong.lat(), 'guessLong': guessLatLong.lng(),
-                        'answerLat': answerLatLong.lat(), 'answerLong': answerLatLong.lng()})
+                    if (mode !== 'teams') {
+                        socket.emit('Submit Guess', {'sessionId': sessionId,
+                            'guessLat': guessLatLong.lat(), 'guessLong': guessLatLong.lng(),
+                            'answerLat': answerLatLong.lat(), 'answerLong': answerLatLong.lng()})
+                    } else {
+                        socket.emit('Submit Team Guess', {'sessionId': sessionId,
+                            'guessLat': guessLatLong.lat(), 'guessLong': guessLatLong.lng(),
+                            'answerLat': answerLatLong.lat(), 'answerLong': answerLatLong.lng(),
+                            'teamId': teamId, 'gameCode': gameCode})
+                    }
 
-                    window.location.href = "/recap?sessionId=" + sessionId + "&mode=br";
+                    window.location.href = "/recap?sessionId=" + sessionId + "&mode=" + mode;
                 }
 
                 let countdown = $('#countdown');
@@ -266,6 +293,23 @@ function initialize() {
                         });
                     });
                 };
+
+                socket.on('Update Teammate Marker', function (data) {
+                    if (data['gameCode'] === gameCode && data['sessionId'] !== sessionId
+                        && parseInt(data['teamId']) === parseInt(teamId)) {
+                        let lat = parseFloat(data['lat']);
+                        let long = parseFloat(data['long']);
+                        let teammate = data['sessionId']
+                        let pos = new google.maps.LatLng(lat, long);
+                        if (teammateMarkers[teammate] !== undefined) {
+                            teammateMarkers[teammate].setMap(null);
+                        }
+                        teammateMarkers[teammate] = new google.maps.Marker({
+                            icon: 'https://www.geoguessr.com/_next/static/images/favicon-aae84a1ec836612840470a029b5c29d6.png',
+                            position: pos, map: staticMap, cursor: 'crosshair'
+                        });
+                    }
+                });
             }
         });
     })

@@ -70,7 +70,7 @@ function initialize() {
                             coords = [guess, answer]
                         }
 
-                        const lineSymbol = {path: 'M 0, 2, 0, 1', strokeOpacity: 1, scale: 1, strokeColor: '#808080'};
+                        const lineSymbol = {path: 'M 0, 2, 0, 1', strokeOpacity: 1, scale: 3, strokeColor: '#808080'};
                         line = new google.maps.Polyline({
                             path: coords, strokeOpacity: 0, geodesic: false,
                             icons: [{icon: lineSymbol, offset: '0', repeat: '10px'}]
@@ -111,7 +111,8 @@ function initialize() {
             });
 
             $('#continue-button').click(function () {
-                if (mode === "br") {
+                $('#continue-button').text('Loading...')
+                if (mode === "BR") {
                     window.location.href = "/br-leaderboard?sessionId=" + sessionId+ "&mode=" + mode;
                 } else {
                     window.location.href = "/leaderboard?sessionId=" + sessionId + "&mode=" + mode;
@@ -165,8 +166,6 @@ function initialize() {
                             distance = Math.round(distance * 0.000621371);
                             points = Math.round(5000 / Math.pow(Math.E, (distance / 926)));
                         }
-
-
 
                         if (validGuess) {
                             new google.maps.Marker({
@@ -238,18 +237,16 @@ function initialize() {
         }
 
         function redirect() {
-            if (mode === 'sp') {
-                window.location.href = baseUrl + "/singleplayer?sessionId=" + sessionId;
-            } else if (mode === 'h') {
-                window.location.href = baseUrl + "/hardcore?sessionId=" + sessionId;
-            } else if (mode === 'v') {
-                window.location.href = baseUrl + "/versus?sessionId=" + sessionId;
-            } else if (mode === 't') {
+            if (mode === 'classic' || mode === 'hardcore') {
+                window.location.href = "/singleplayer?sessionId=" + sessionId + '&mode=' + mode;
+            } else if (mode === 'BR' || mode === 'versus') {
+                window.location.href = "/multiplayer?sessionId=" + sessionId;
+            } else if (mode === 'teams') {
                 socket.emit('Get Team Id', {'sessionId': sessionId})
 
                 socket.on('Send Team Id', function (data) {
                     if (data['sessionId'] === sessionId) {
-                        window.location.href = baseUrl + "/teams?sessionId=" + sessionId +
+                        window.location.href = baseUrl + "/multiplayer?sessionId=" + sessionId +
                             "&teamId=" + data['teamId'];
                     }
                 });

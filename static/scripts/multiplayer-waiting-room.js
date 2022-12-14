@@ -4,7 +4,9 @@ $(document).ready(function () {
 
     const params = new URLSearchParams(window.location.search);
     let sessionId = params.get('sessionId');
-    const subtitle = $('#subtitle');
+    let mode = params.get('mode');
+    const playerBox = $('#players');
+    const modeName = $('#mode-name');
 
     let gameCode;
     let username;
@@ -12,11 +14,18 @@ $(document).ready(function () {
     let teams = 0;
     let currentTeam = 1;
 
+    if (mode !== 'teams') {
+        $('#add').remove();
+    } else if (mode === 'teams') {
+        $('#players').remove();
+    }
+
     document.body.style.visibility = 'hidden';
     $('#loader').css('visibility', 'visible')
     socket.on('connect', function () {
-        $('.outer').css('top', '35%');
-        $('#title').css('color', 'black');
+        if (mode === 'teams') {
+            $('.outer').css('top', '35%');
+        }
         socket.emit('Get Session Data', {'sessionId': sessionId})
 
         socket.on('Send Session Data', function (data) {
@@ -27,65 +36,63 @@ $(document).ready(function () {
                 gameCode = sessionData['gameCode']
                 host = sessionData['host']
 
-                if (host !== "true") {
+                if (host !== "true" && mode === 'teams') {
                     $('#add').remove();
                 }
 
                 socket.emit('User Connected', {'username': username, 'gameCode': gameCode, 'sessionId': sessionId})
+                if (mode !== 'teams') {
+                    socket.emit('Get Players', {'gameCode': gameCode, 'sessionId': sessionId})
+                }
 
                 document.getElementById('name-display').innerHTML =
                     "<i class=\"fa fa-home\" onclick='window.location.href=\"/\"'></i>" + username;
-                $('#code-display').text("Teams - " + gameCode)
+                $('#code-display').text(mode.charAt(0).toUpperCase() + mode.slice(1) + ' - ' + gameCode);
 
                 if (host === "true") {
                     $('#title').text("You're the host!");
-                    subtitle.text("START GAME");
+                    modeName.text("START GAME");
 
-                    subtitle.css('margin-left', '600px')
-                    subtitle.css('margin-right', '600px')
-                    subtitle.css('border', '2px solid black')
+                    modeName.css('margin-left', '600px')
+                    modeName.css('margin-right', '600px')
+                    modeName.css('border', '3px solid white')
 
-                    subtitle.click(function () {
+                    modeName.click(function () {
                         socket.emit('Generate Location', {'gameCode': gameCode})
-                        subtitle.text("Loading...");
+                        modeName.text("Loading...");
                     })
                 } else {
                     $('#title').text("You're in!");
-                    $('#subtitle').css('color', '#C21806')
-                    subtitle.text("Wait for the host to start the game.");
+                    modeName.text("Wait for the host to start the game.");
                 }
 
-                socket.emit('Player Joined Team', {'teamId': 1, 'gameCode': gameCode, 'sessionId': sessionId, 'username': username, 'lastTeam': currentTeam})
-
-                socket.emit('Get Teams', {'gameCode': gameCode, 'sessionId': sessionId})
-
-                socket.on('Send Teams', function (data) {
-                    if (data['sessionId'] === sessionId) {
-                        let teamIds = data['teamIds']
-                        let usernames = data['usernames']
-                        let numTeams = data['teams']
-
-                        for (let i = 1; i <= numTeams; i++) {
-                            addTeam();
-                            addListener();
+                if (mode === 'teams') {
+                    socket.emit('Player Joined Team', {'teamId': 1, 'gameCode': gameCode, 'sessionId': sessionId, 'username': username, 'lastTeam': currentTeam})
+                    socket.emit('Get Teams', {'gameCode': gameCode, 'sessionId': sessionId})
+                    socket.on('Send Teams', function (data) {
+                        if (data['sessionId'] === sessionId) {
+                            let teamIds = data['teamIds']
+                            let usernames = data['usernames']
+                            let numTeams = data['teams']
+                            for (let i = 1; i <= numTeams; i++) {
+                                addTeam();
+                                addListener();
+                            }
+                            for (let i = 0; i < teamIds.length; i++) {
+                                document.getElementById(teamIds[i]).innerHTML = document.getElementById(teamIds[i]).innerHTML + usernames[i] + "<br>";
+                                $(String(teamIds[i])).hide();
+                            }
                         }
-
-                        for (let i = 0; i < teamIds.length; i++) {
-                            document.getElementById(teamIds[i]).innerHTML = document.getElementById(teamIds[i]).innerHTML + usernames[i] + "<br>";
-                            $(String(teamIds[i])).hide();
-                        }
-                    }
-
-                    document.body.style.visibility = 'visible';
-                    $('#loader').css('visibility', 'hidden');
-                });
+                        document.body.style.visibility = 'visible';
+                        $('#loader').css('visibility', 'hidden');
+                    });
+                }
             }
         })
 
         $('#add').click(function () {
             addTeam();
             addListener()
-
             socket.emit('Team Created', {'gameCode': gameCode, 'sessionId': sessionId})
         });
 
@@ -101,7 +108,6 @@ $(document).ready(function () {
                 let teamId = data['teamId'];
                 let username = data['username'];
                 let lastTeam = data['lastTeam'];
-
                 document.getElementById(lastTeam).innerHTML = document.getElementById(lastTeam).innerHTML.replace(username + "<br>", "");
                 document.getElementById(teamId).innerHTML = document.getElementById(teamId).innerHTML + username + "<br>";
             }
@@ -119,7 +125,7 @@ $(document).ready(function () {
         function addTeam() {
             teams = teams + 1;
             $('.teams-container').append("<div class=\"team\" id=\'" + teams + "\'><b><u>Team " +
-                    teams + "</u></b><br></div>")
+                teams + "</u></b><br></div>")
 
             $('#' + teams).hide().fadeIn(1000);
 
@@ -128,10 +134,36 @@ $(document).ready(function () {
             }
         }
 
-
         socket.on('Start Game', function (data) {
             if (data['gameCode'] === gameCode) {
-                window.location.href = baseUrl + "/teams?sessionId=" + sessionId + "&teamId=" + currentTeam;
+                if (mode !== 'teams') {
+                    window.location.href = '/multiplayer?sessionId=' + sessionId + '&mode=' + mode;
+                } else {
+                    window.location.href = '/multiplayer?sessionId=' + sessionId + '&mode=' + mode + '&teamId=' + currentTeam;
+                }
+            }
+        })
+
+        socket.on('Send Players', function (data) {
+            if (data['sessionId'] === sessionId) {
+                playerBox.text(data['players'])
+            }
+
+            document.body.style.visibility = 'visible';
+            $('#loader').css('visibility', 'hidden');
+
+            $('.earth').css('animation', 'fadeInUp 1s ease-in-out');
+        })
+
+        socket.on('Player Joined', function (data) {
+            if (data['gameCode'] === gameCode) {
+                socket.emit('Get Players', {'gameCode': gameCode, 'sessionId': sessionId})
+            }
+        })
+
+        socket.on('Player Left', function (data) {
+            if (data['gameCode'] === gameCode) {
+                socket.emit('Get Players', {'gameCode': gameCode, 'sessionId': sessionId})
             }
         })
     })

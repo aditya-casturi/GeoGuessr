@@ -1,68 +1,43 @@
 body {
     user-select: none;
-    background: #EEEEEE;
     overflow: hidden;
+    background: url("https://wallpaperaccess.com/full/19602.jpg") #000 no-repeat;
+    background-size: cover;
+    background-position-x: -500px;
 }
 
 .inner {
+    margin-left: 450px;
     text-align: center;
 }
 
 .outer {
+    width: 100%;
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
 }
 
-.header {
-    position: relative;
-    width: 100%;
-    height: 60px;
-
-    border-bottom: 3px solid #E8E8E8;
-    padding-bottom: 10px;
-    padding-top: 10px;
-}
-
-.logo {
-    width: fit-content;
-    height: 100%;
-    object-fit: cover;
-    overflow: hidden;
-    user-select: none;
-    margin-left: 25px;
-}
-
-.header > div {
-    width: fit-content;
-    height: 100%;
-    object-fit: cover;
-    user-select: none;
-    float: right;
-    margin-right: 30px;
-    margin-top: 20px;
-    font-family: futura-pt, sans-serif;
-    font-weight: bold;
-}
-
 input {
-    width: 200px;
-    height: fit-content;
-    border-radius: 5px;
-    border: 2px solid black;
+    padding: 10px;
+    background: white;
+    font-weight: 800;
+    font-size: 20pt;
+    background: none;
+    border: 3px solid white;
+    font-family: futura-pt-condensed ,sans-serif;
+    user-select: none;
+    color: white;
+    margin-bottom: 20px;
     outline: none;
     text-align: center;
-    color: black;
-    padding: 10px 0 10px 0;
-    font-size: 15pt;
-    font-family: futura-pt, sans-serif;
-    font-weight: 500;
-    margin-top: 20px;
+    margin-right: 10px;
+    width: 200px;
 }
 
 input::placeholder {
-    color: gray;
+    color: white;
 }
 
 input::-webkit-outer-spin-button,
@@ -72,26 +47,30 @@ input::-webkit-inner-spin-button {
 }
 
 input[type=number] {
-    -moz-appearance:textfield; /* Firefox */
+    -moz-appearance:textfield;
 }
 
 #join {
-    width: 50px;
+    width: 55px;
     height: fit-content;
     border-radius: 5px;
-    border: 2px solid black;
     outline: none;
     padding: 10px 0 10px 0;
-    font-size: 16pt;
-    margin-top: 20px;
+    font-size: 22pt;
+    margin-top: 10px;
+
+    background: none;
+    border: 3px solid white;
+    user-select: none;
+    color: white;
 }
 
 .fa {
-    color: #808080;
+    color: white;
 }
 
 #join:hover .fa {
-    color: #C21806;
+    color: #4C95D9;
 }
 
 .shake {
@@ -140,12 +119,18 @@ input[type=number] {
 }
 
 .fa-globe {
-    color: #C21806;
+    color: #4C95D9;
 }
 
 #description {
-    font-family: futura-pt, sans-serif;
-    font-weight: bold;
-    font-size: 20pt;
-    color: #C21806;
+    margin-top: 20px;
+
+    font-family: futura-pt-condensed,sans-serif;
+    font-weight: 800;
+    font-style: italic;
+    font-size:65pt;
+    user-select: none;
+    color: black;
+    -webkit-text-stroke-width: 3px;
+    -webkit-text-stroke-color: white;
 }

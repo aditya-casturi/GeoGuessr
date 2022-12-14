@@ -74,7 +74,7 @@ window.onload = function() {
 
                 socket.on('Start Game', function (data) {
                     if (data['gameCode'] === gameCode && !eliminated) {
-                        window.location.href = baseUrl + "/battle-royale?sessionId=" + sessionId;
+                        window.location.href = baseUrl + "/multiplayer?sessionId=" + sessionId + '&mode=' + mode;
                     }
                 })
 

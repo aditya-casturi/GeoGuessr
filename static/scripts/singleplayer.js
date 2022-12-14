@@ -5,6 +5,9 @@ function initialize() {
     // Get the 'sessionId' parameter from the URL query string
     const params = new URLSearchParams(window.location.search);
     const sessionId = params.get('sessionId');
+    const mode = params.get('mode');
+
+    $('#mode-info').text(mode.charAt(0).toUpperCase() + mode.slice(1));
 
     // Define the center of the map
     const centerOfTheWorld = { lat: 38.087463014457136, lng: -41.98349121041763};
@@ -37,7 +40,7 @@ function initialize() {
                 let rounds = data['rounds']
 
                 // Update the round display
-                $('#round-info').text("Round " + (rounds - roundsLeft + 1) + "/" + rounds)
+                $('#game-info').text("Round " + (rounds - roundsLeft + 1) + "/" + rounds)
 
                 // Get the correct location from the message
                 let lat = parseFloat(data['lat']);
@@ -54,6 +57,29 @@ function initialize() {
                 // Keep track of the current heading of the panorama
                 let currentHeading;
 
+                let streetView;
+                // Initialize the panorama
+                if (mode === 'hardcore') {
+                    streetView = new google.maps.StreetViewPanorama(
+                        document.getElementById("street-view"), {
+                            disableDefaultUI: true, addressControl: false,
+                            showRoadLabels: false, position: answerLatLong,
+                            pov: {heading: 34, pitch: 10},
+                            panControl: false,
+                            clickToGo: false,
+                            scrollwheel: false,
+                        }
+                    );
+                } else if (mode === 'classic') {
+                    streetView = new google.maps.StreetViewPanorama(
+                        document.getElementById("street-view"), {
+                            disableDefaultUI: true, addressControl: false,
+                            showRoadLabels: false, position: answerLatLong,
+                            pov: {heading: 34, pitch: 10}
+                        }
+                    );
+                }
+
                 // Initialize the map
                 const staticMap = new google.maps.Map(
                     document.getElementById("map"), {
@@ -63,14 +89,7 @@ function initialize() {
                     }
                 );
 
-                // Initialize the panorama
-                const streetView = new google.maps.StreetViewPanorama(
-                    document.getElementById("street-view"), {
-                        disableDefaultUI: true, addressControl: false,
-                        showRoadLabels: false, position: answerLatLong,
-                        pov: {heading: 34, pitch: 10}
-                    }
-                );
+
 
                 // Set the map
                 staticMap.setStreetView(streetView);
@@ -91,7 +110,7 @@ function initialize() {
                         // If there were no markers on the map before this click,
                         // change the color of the "guess" button to indicate that it can be clicked
                         if (empty) {
-                            guess.css('background', '#C21806');
+                            guess.css('background', 'black');
                         }
 
                         // Make the "guess" button clickable and change the cursor to a pointer
@@ -134,7 +153,11 @@ function initialize() {
                         'answerLat': answerLatLong.lat(), 'answerLong': answerLatLong.lng()})
 
                     // Redirect to the recap page
-                    window.location.href = '/recap?sessionId=' + sessionId + "&mode=sp";
+                    if (mode === 'hardcore') {
+                        window.location.href = '/recap?sessionId=' + sessionId + '&mode=hardcore';
+                    } else if (mode === 'classic') {
+                        window.location.href = '/recap?sessionId=' + sessionId + '&mode=classic';
+                    }
                 })
 
                 // Place a marker on the map at the specified location
@@ -193,5 +216,6 @@ function initialize() {
 }
 
 window.onload = function () {
+    document.body.style.visibility = 'hidden';
     initialize();
 }

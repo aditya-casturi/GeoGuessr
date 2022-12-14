@@ -1,0 +1,129 @@
+body {
+    background: url("https://wallpaperaccess.com/full/19602.jpg") #000 no-repeat;
+    background-size: cover;
+    background-position-x: -500px;
+    overflow: hidden;
+    color: white;
+    user-select: none;
+}
+
+.inner {
+    text-align: center;
+    margin-left: 450px;
+}
+
+.outer {
+    width: fit-content;
+
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#mode-name {
+    font-family: futura-pt-condensed,sans-serif;
+    font-weight: 800;
+    font-style: italic;
+    font-size:65pt;
+    user-select: none;
+    color: black;
+    -webkit-text-stroke-width: 3px;
+    -webkit-text-stroke-color: white;
+    letter-spacing: 2px;
+}
+
+#play-button {
+    padding: 10px;
+    background: white;
+    font-size: 20pt;
+    border: 1px solid transparent;
+    border-radius: 50px;
+
+    font-family: futura-pt-condensed,sans-serif;
+    font-weight: 800;
+    font-style: italic;
+    user-select: none;
+    color: black;
+    margin-top: 50px;
+}
+
+#play-button:hover {
+    animation: scale 200ms ease-in-out forwards;
+}
+
+#play-button:not(:hover) {
+    animation: shrink 200ms ease-in-out forwards;
+}
+
+@keyframes scale {
+    from { transform: scale(1); }
+    to { transform: scale(1.1); }
+}
+
+@keyframes shrink {
+    from { transform: scale(1.1); }
+    to { transform: scale(1); }
+}
+
+.block {
+    width: calc(100% / 3);
+    float: left;
+    overflow: hidden;
+    font-family: futura-pt, sans-serif;
+    font-size: 20pt;
+}
+
+#wrapper {
+    width: 300px;
+}
+
+#name {
+    padding: 10px;
+    background: white;
+    font-weight: 800;
+    font-size: 20pt;
+    background: none;
+    border: 3px solid white;
+    font-family: futura-pt-condensed ,sans-serif;
+    user-select: none;
+    color: white;
+    margin-bottom: 20px;
+    outline: none;
+}
+
+input::placeholder {
+    color: white;
+}
+
+.shake {
+    animation: shake 0.82s cubic-bezier(.36, .07, .19, .97) both;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    border-color: red;
+}
+
+@keyframes shake {
+
+    10%,
+    90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%,
+    80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    40%,
+    60% {
+        transform: translate3d(4px, 0, 0);
+    }
+}

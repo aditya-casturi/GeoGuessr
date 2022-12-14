@@ -11,7 +11,7 @@ body {
     position: absolute;
     width: 100%;
     height: 40%;
-    background: linear-gradient(#05050F, #272F50);
+    background: black;
 }
 
 .gmnoprint a, .gmnoprint span {
@@ -76,8 +76,8 @@ html, body {
     width: fit-content;
     left: -50%;
     text-align: center;
-    background: #C21806;
-    color: white;
+    background: white;
+    color: black;
     border: 1px solid transparent;
     border-radius: 20px;
     padding: 5px 40px;
@@ -126,7 +126,7 @@ html, body {
 
     margin: auto;
     border: 16px solid #808080;
-    border-top: 16px solid #C21806;
+    border-top: 16px solid black;
     border-radius: 50%;
     width: 60px;
     height: 60px;
