@@ -19,7 +19,7 @@
 <div class="outer">
     <div class="inner" id="description">JOIN A PUBLIC GAME</div>
     <div class="inner">
-        <input type="text" placeholder="Name" id="name">
+        <input type="text" placeholder="Name" id="name" onkeydown="return event.charCode !== 32">
         <input type="number" onkeydown="return event.keyCode !== 69"
                placeholder="Game PIN" id="code"
                maxlength="5"
