@@ -35,14 +35,14 @@ body {
     user-select: none;
     width: 700px;
     height: fit-content;
-    background: white;
+    background: black;
     display: table;
     font-family: futura-pt, sans-serif;
     font-size: 25pt;
     margin: 20px auto;
     padding: 10px 15px;
-    color: white;
-    border: 3px solid black;
+    color: black;
+    border: 3px solid white;
 }
 
 .align-left {
@@ -53,11 +53,11 @@ body {
     float: right;
 }
 
-#first-place {
-    background: black;
-    color: white;
-    border-color: white;
-}
+/*#first-place {*/
+/*    background: black;*/
+/*    color: white;*/
+/*    border-color: white;*/
+/*}*/
 
 #continue-button, #lobby-button {
     visibility: hidden;

@@ -211,8 +211,8 @@ def generate_next_location(data):
     lat = location['lat']
     long = location['long']
 
-    query = 'UPDATE adityacasturi_games SET currentRoundLat = %s, currentRoundLong = %s' \
-            ' WHERE gameCode = %s'
+    query = 'UPDATE adityacasturi_games SET currentRoundLat = %s, currentRoundLong = %s,' \
+            ' guessesSubmitted = 0 WHERE gameCode = %s'
     query_vars = (lat, long, gameCode,)
     execute_query(query, query_vars)
 

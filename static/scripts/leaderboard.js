@@ -38,10 +38,8 @@ window.onload = function() {
                         console.log(data);
                         document.getElementById((i+1) + '-username').textContent = "Team " + data['teamId'];
                         document.getElementById((i+1) + '-points').textContent = data['points'];
-                        if (i > 0) {
-                            document.getElementById((i+1) + '-username').style.color = 'black';
-                            document.getElementById((i+1) + '-points').style.color = 'black';
-                        }
+                        document.getElementById((i+1) + '-username').style.color = 'white';
+                        document.getElementById((i+1) + '-points').style.color = 'white';
                     }
 
                     adjustUI();
@@ -83,10 +81,8 @@ window.onload = function() {
                         const data = leaderboard[i];
                         document.getElementById((i+1) + '-username').textContent = data['username'];
                         document.getElementById((i+1) + '-points').textContent = data['points'];
-                        if (i > 0) {
-                            document.getElementById((i+1) + '-username').style.color = 'black';
-                            document.getElementById((i+1) + '-points').style.color = 'black';
-                        }
+                        document.getElementById((i+1) + '-username').style.color = 'white';
+                        document.getElementById((i+1) + '-points').style.color = 'white';
                     }
 
                     adjustUI();

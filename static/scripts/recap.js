@@ -7,7 +7,7 @@ function initialize() {
 
     $('#loader').css('visibility', 'visible')
     socket.on('connect', function () {
-        if (mode !== 't') {
+        if (mode !== 'teams') {
             socket.emit('Get Guess', {'sessionId': sessionId})
 
             socket.on('Send Guess', function (data) {
@@ -131,7 +131,6 @@ function initialize() {
                     let bestCenter;
                     let closestDistance;
 
-                    let validGuess = true;
                     let answer = new google.maps.LatLng(answerLat, answerLong);
 
                     const icon = {
@@ -150,7 +149,10 @@ function initialize() {
                         position: answer, map: map, cursor: 'crosshair', icon: icon
                     });
 
+                    let validGuessExists = false;
+
                     for (const guess of guesses) {
+                        let validGuess = true;
                         let guessLat = parseFloat(guess['guessLat']);
                         let guessLong = parseFloat(guess['guessLong']);
                         let userGuess = new google.maps.LatLng(guessLat, guessLong);
@@ -165,6 +167,7 @@ function initialize() {
                             distance = google.maps.geometry.spherical.computeDistanceBetween(answer, userGuess);
                             distance = Math.round(distance * 0.000621371);
                             points = Math.round(5000 / Math.pow(Math.E, (distance / 926)));
+                            validGuessExists = true;
                         }
 
                         if (validGuess) {
@@ -218,7 +221,7 @@ function initialize() {
                     const pointsDisplay = $('#points-display')
                     const pointsBar = $('#points-bar')
 
-                    if (validGuess) {
+                    if (validGuessExists) {
                         distanceDisplay.html("The best guess was <i><b style='color: #F9CA19'>" + closestDistance + "</b></i> miles from the correct location.")
                     } else {
                         distanceDisplay.text("You didn't guess in time.")
