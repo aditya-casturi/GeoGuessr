@@ -518,7 +518,7 @@ def generate_game_code():
 
 
 def generate_location():
-    with open("static/data/temp.csv", "r") as cities:
+    with open("static/data/temp.csv", "r", encoding="utf-8", errors="ignore") as cities:
         csv_reader = csv.reader(cities)
         next(csv_reader)
         chosen_row = random.choice(list(csv_reader))
